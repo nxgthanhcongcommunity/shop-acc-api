@@ -1,0 +1,1 @@
+export { default as MasterDataController } from './MasterDataController';
