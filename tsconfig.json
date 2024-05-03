@@ -7,7 +7,9 @@
         "target": "es6",
         "outDir": "./dist",
         "baseUrl": "./src",
-        "lib": ["es6"]
+        "lib": [
+            "es6"
+        ]
     },
     "include": [
         "src/**/*.ts"

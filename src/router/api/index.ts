@@ -1,7 +1,7 @@
 import * as express from "express";
-const router = express.Router();
+const appRouter = express.Router();
 import masterDataRouter from "./masterDataRouter";
 
-router.use("/master-data", masterDataRouter);
+appRouter.use("/master-data", masterDataRouter);
 
-export default router;
+export default appRouter;

@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 import router from "./router";
 
 class App {
@@ -12,6 +13,7 @@ class App {
 
   private config(): void {
     this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(cors());
     this.app.use(router);
   }
 }
