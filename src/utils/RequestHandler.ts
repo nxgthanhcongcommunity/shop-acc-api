@@ -27,6 +27,14 @@ class RequestHandler {
         })
     }
 
+    send(res, status, succeed, message, data) {
+        res.status(status).json({
+            succeed: succeed,
+            message: message,
+            data: data,
+        })
+    }
+
 }
 
 export default RequestHandler;
