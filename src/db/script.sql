@@ -4,6 +4,3 @@ create table MasterData (
 )
 
 insert into masterdata (key, value) values('home-page', '{"ShopName":"LH rùa"}');
-delete from masterdata
-
-select * from masterdata

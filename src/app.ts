@@ -1,7 +1,8 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import * as cors from "cors";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
 import router from "./router";
+import 'dotenv/config';
 
 class App {
   public app: express.Application;

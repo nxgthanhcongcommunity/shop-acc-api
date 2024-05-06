@@ -16,7 +16,6 @@ class MasterDataController {
             const data = JSON.parse(result.value);
             requestHandler.sendSucceed(res, data);
         } catch (ex) {
-
             requestHandler.sendError(res);
         }
     }
