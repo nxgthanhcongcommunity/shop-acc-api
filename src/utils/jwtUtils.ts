@@ -1,17 +1,34 @@
 
 import jwt from "jsonwebtoken";
-const { PRIVATE_KEY } = process.env
+import 'dotenv/config';
 
-const generateToken = (user) => {
+const { TOKEN_PRIVATE_KEY, TOKEN_EXPIRES_IN } = process.env
+
+const generateToken = (account) => {
+
     const payload = {
-        user: user,
+        account: account,
     };
 
-    const options = {
-        expiresIn: '1h', // Thời gian hết hạn của JWT
-    };
-
-    return jwt.sign(payload, PRIVATE_KEY, options);
+    return jwt.sign(payload, TOKEN_PRIVATE_KEY, {
+        expiresIn: TOKEN_EXPIRES_IN || '1h',
+    });
 };
 
-export { generateToken };
+const verifyToken = (token) => {
+    try {
+        if (!token) {
+            return null;
+        }
+
+        const decoded = jwt.verify(token, TOKEN_PRIVATE_KEY);
+        return decoded;
+
+    } catch (ex) {
+
+        console.log(ex);
+        return null;
+    }
+};
+
+export { generateToken, verifyToken };

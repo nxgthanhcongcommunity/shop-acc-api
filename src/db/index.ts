@@ -1,19 +1,25 @@
-import * as pg from 'pg'
+import { Sequelize } from 'sequelize';
+import 'dotenv/config';
 
-const { Pool } = pg
+const { RESET_DATABASE } = process.env;
 
-const pool = new Pool({
-    user: 'postgres',
+export const sequelize = new Sequelize('shop-acc', 'postgres', 'qqq111!!!', {
     host: 'localhost',
-    database: 'shop-acc',
-    password: 'qqq111!!!',
     port: 5432,
+    dialect: 'postgres'
 });
 
-export const queryFirstOrDefaultAsync = async (text, param = {}) => {
-    return (await pool.query(text, param)).rows[0]
-}
+(async () => {
+    try {
+        await sequelize.authenticate();
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
 
-export const query = async (text) => {
-    return await pool.query(text)
-}
+    console.log("RESET_DATABASE: ", RESET_DATABASE)
+
+    if (RESET_DATABASE === 'true') {
+        await sequelize.sync({ force: true });
+        console.log('All models were synchronized successfully.');
+    }
+})()

@@ -14,6 +14,7 @@ class App {
 
   private config(): void {
     this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(express.json())
     this.app.use(cors());
     this.app.use(router);
   }

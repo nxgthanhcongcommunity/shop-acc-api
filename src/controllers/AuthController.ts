@@ -1,14 +1,13 @@
-import passport from "passport";
-import "../utils/passport";
-import * as db from "../db";
-import { RequestHandler } from "../utils";
 import { generateToken } from "../utils/jwtUtils";
-import { AuthRepository } from "../repositories";
+import { ROLE } from "../constants";
+import { AccountModel } from "../models";
+import { RequestHandler } from "../utils";
+import "../utils/passport";
 
 const requestHandler = new RequestHandler();
-const authRepo = new AuthRepository();
 
 class AuthController {
+
   async GoogleCallback(req, res) {
     try {
       if (!req.user) {
@@ -25,55 +24,45 @@ class AuthController {
         provider: req.user.provider,
       };
 
-      const userInDatabase = await authRepo.GetUserByProvider(
-        user.providerId,
-        user.provider
-      );
+      let createdAccount;
 
-      //   const query = {
-      //     text: "SELECT sp_create_user($1, $2, $3, $4, $5, $6, $7, $8)",
-      //     values: [
-      //       user.providerId,
-      //       user.familyName,
-      //       user.givenName,
-      //       user.email,
-      //       user.photo,
-      //       user.provider,
-      //       1,
-      //       "cong",
-      //     ],
-      //   };
+      const accountInDatabase = await AccountModel.findOne({
+        where: {
+          idAtProvider: user.providerId,
+          providerName: user.provider,
+        }
+      });
+      createdAccount = accountInDatabase;
 
-      //   const { rowCount = 0 } = await db.query(query);
-      //   if (rowCount !== 1) {
-      //     requestHandler.sendError(res);
-      //     return;
-      //   }
+      if (!accountInDatabase) {
+        const newAccount = await AccountModel.create({
+          idAtProvider: user.providerId,
+          familyName: user.familyName,
+          givenName: user.givenName,
+          email: user.email,
+          isVerifyEmail: true,
+          photo: user.photo,
+          providerName: user.provider,
+          role: ROLE.MEMBER,
+        });
+        await newAccount.save();
+        createdAccount = newAccount;
+      }
+
+      const token = generateToken({
+        id: createdAccount.id,
+        role: createdAccount.role,
+      })
 
       res.status(200).json({
-        token: generateToken(user),
+        token
       });
 
-      // var token = jwt.sign({
-      //     data: {
-      //         Id: req.user.id,
-      //         Name: req.user.name,
-      //         Email: req.user.emails[0].value,
-      //         Photo: req.user.photos[0].value,
-      //     }
-      // }, PRIVATE_KEY, { expiresIn: '1h' });
-
-      // // return user details
-      // res.status(200).json({
-      //     token,
-      // });
-
-      // const token = generateToken(user);
     } catch (ex) {
-      console.log(ex);
       requestHandler.sendError(res);
     }
   }
+
   async FacebookCallback(req, res) {
     try {
       if (!req.user) {
@@ -84,6 +73,12 @@ class AuthController {
       requestHandler.sendError(res);
     }
   }
+
+  async HandleGoggleLoginAsync(req, res) {
+    console.log(req.body);
+    res.send("ok");
+  }
+
 }
 
 export default new AuthController();

@@ -6,15 +6,15 @@ const requestHandler = new RequestHandler();
 class MasterDataController {
     async GetByKey(req, res) {
         try {
-            const { key } = req.query;
+            // const { key } = req.query;
 
-            const result = await db.queryFirstOrDefaultAsync('select * from masterdata where key=$1', [key])
-            if (result == null) {
-                requestHandler.sendNotFound(res, "data not found");
-            }
+            // const result = await db.queryFirstOrDefaultAsync('select * from masterdata where key=$1', [key])
+            // if (result == null) {
+            //     requestHandler.sendNotFound(res, "data not found");
+            // }
 
-            const data = JSON.parse(result.value);
-            requestHandler.sendSucceed(res, data);
+            // const data = JSON.parse(result.value);
+            requestHandler.sendSucceed(res, "111");
         } catch (ex) {
             requestHandler.sendError(res);
         }

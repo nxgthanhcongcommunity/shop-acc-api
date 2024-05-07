@@ -10,7 +10,7 @@
     "prod": "npm run build && npm run start"
   },
   "author": "",
-  "license": "ISC", 
+  "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.21",
     "body-parser": "^1.20.2",
@@ -22,6 +22,8 @@
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "pg": "^8.11.5"
+    "pg": "^8.11.5",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3"
   }
 }

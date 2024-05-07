@@ -25,4 +25,7 @@ router.get(
     AuthController.FacebookCallback
 );
 
+
+router.post("/google", AuthController.HandleGoggleLoginAsync);
+
 export default router;
