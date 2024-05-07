@@ -4,6 +4,10 @@ import { AccountModel } from "../models";
 import { RequestHandler } from "../utils";
 import "../utils/passport";
 
+const { GOOGLE_CLIENT_ID } = process.env
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
 const requestHandler = new RequestHandler();
 
 class AuthController {
@@ -75,8 +79,16 @@ class AuthController {
   }
 
   async HandleGoggleLoginAsync(req, res) {
-    console.log(req.body);
-    res.send("ok");
+    const { token } = req.body
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: GOOGLE_CLIENT_ID,
+    })
+
+    const payload = ticket.getPayload();
+
+    console.log(payload);
+
   }
 
 }
