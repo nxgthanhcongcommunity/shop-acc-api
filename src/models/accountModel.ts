@@ -19,6 +19,10 @@ const Account = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        passwordHash: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         isVerifyEmail: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,

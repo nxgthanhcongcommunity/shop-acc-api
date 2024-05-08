@@ -4,7 +4,6 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 
 const { APP_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, FACEBOOK_APP_ID, FACEBOOK_APP_SECRET } = process.env;
-console.log(process.env.APP_URL);
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,

@@ -13,10 +13,25 @@ class App {
   }
 
   private config(): void {
+
+    global.__basedir = __dirname + "/..";
+
     this.app.use(cors());
+
+    this.app.set('views', './src/views');
+    this.app.set('view engine', 'ejs');
+
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(express.json());
     this.app.use(router);
+
+
+    this.app.get('/', (req, res) => {
+      res.render('home');
+    });
+    this.app.get('/login', (req, res) => {
+      res.render('auth/login');
+    });
   }
 }
 

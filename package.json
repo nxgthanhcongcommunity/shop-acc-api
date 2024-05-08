@@ -17,15 +17,18 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
     "express": "^4.19.2",
     "google-auth-library": "^9.9.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.0",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
+    "read-excel-file": "^5.8.0",
     "sequelize": "^6.37.3"
   }
 }
