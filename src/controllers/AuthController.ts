@@ -3,15 +3,15 @@ import { ROLE } from "../constants";
 import { AccountModel } from "../models";
 import { RequestHandler } from "../utils";
 import "../utils/passport";
+import axios from "axios";
 
-const { GOOGLE_CLIENT_ID } = process.env
-const { OAuth2Client } = require('google-auth-library');
+const { GOOGLE_CLIENT_ID } = process.env;
+const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const requestHandler = new RequestHandler();
 
 class AuthController {
-
   async GoogleCallback(req, res) {
     try {
       if (!req.user) {
@@ -34,7 +34,7 @@ class AuthController {
         where: {
           idAtProvider: user.providerId,
           providerName: user.provider,
-        }
+        },
       });
       createdAccount = accountInDatabase;
 
@@ -56,12 +56,11 @@ class AuthController {
       const token = generateToken({
         id: createdAccount.id,
         role: createdAccount.role,
-      })
-
-      res.status(200).json({
-        token
       });
 
+      res.status(200).json({
+        token,
+      });
     } catch (ex) {
       requestHandler.sendError(res);
     }
@@ -79,18 +78,58 @@ class AuthController {
   }
 
   async HandleGoggleLoginAsync(req, res) {
-    const { token } = req.body
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: GOOGLE_CLIENT_ID,
-    })
+    const credential = req.body;
 
-    const payload = ticket.getPayload();
+    try {
+      const response = await axios.get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential.access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${credential.access_token}`,
+            Accept: "application/json",
+          },
+        }
+      );
 
-    console.log(payload);
+      const userInfo = response.data;
+      let createdAccount;
 
+      const accountInDatabase = await AccountModel.findOne({
+        where: {
+          idAtProvider: userInfo.id,
+          providerName: "google",
+        },
+      });
+      createdAccount = accountInDatabase;
+
+      if (!accountInDatabase) {
+        const newAccount = await AccountModel.create({
+          idAtProvider: userInfo.id,
+          familyName: userInfo.family_name,
+          givenName: userInfo.given_name,
+          email: userInfo.email,
+          isVerifyEmail: userInfo.verified_email,
+          photo: userInfo.picture,
+          providerName: "google",
+          role: ROLE.MEMBER,
+        });
+        await newAccount.save();
+        createdAccount = newAccount;
+      }
+
+      const token = generateToken({
+        id: createdAccount.id,
+        role: createdAccount.role,
+      });
+
+      res.status(200).json({
+        token,
+      });
+    } catch (ex) {
+      console.log(ex);
+      requestHandler.sendError(res);
+    }
   }
-
 }
 
 export default new AuthController();
