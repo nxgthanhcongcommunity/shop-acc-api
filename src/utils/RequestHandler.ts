@@ -3,7 +3,7 @@ class RequestHandler {
 
     }
 
-    sendSucceed(res, data, message = null) {
+    sendSucceed(res, data = null, message = null) {
         res.status(200).json({
             succeed: true,
             message: message || "succeed result",
@@ -23,6 +23,14 @@ class RequestHandler {
         res.status(500).json({
             succeed: false,
             message: message || "error",
+            data: null,
+        })
+    }
+
+    sendClientError(res, message = null) {
+        res.status(400).json({
+            succeed: false,
+            message: message || "invalid request",
             data: null,
         })
     }

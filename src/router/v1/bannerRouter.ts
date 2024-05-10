@@ -5,5 +5,11 @@ const router = express.Router();
 
 router.post("/upload", uploadFileMiddleware.single("file"), BannerController.Upload);
 router.get("/get-banners", BannerController.GetBanners);
+router.post("/add-banner", BannerController.AddBanner);
+router.put("/update-banner", BannerController.UpdateBanner);
+router.delete("/delete-banner", BannerController.DeleteBanner);
+
+//DeleteBanner
+
 
 export default router;

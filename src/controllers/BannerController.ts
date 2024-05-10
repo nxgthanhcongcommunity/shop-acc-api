@@ -1,3 +1,4 @@
+import { Op, Sequelize, where } from "sequelize";
 import { BannerModel } from "../models";
 import { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
@@ -42,15 +43,101 @@ class BannerController {
     }
   }
   async GetBanners(req, res) {
-    BannerModel.findAll()
-      .then((data) => {
-        requestHandler.sendSucceed(res, data);
-      })
-      .catch((err) => {
-        console.log(err);
-        requestHandler.sendError(res);
+
+    try {
+
+      const { page, limit, name = '' } = req.query;
+
+      const data = await BannerModel.findAll({
+        offset: page > 0 ? (page - 1) * limit : null,
+        limit: limit || null,
+        where: {
+          name: {
+            [Op.and]: [
+              Sequelize.where(Sequelize.fn('LENGTH', Sequelize.col('name')), '>', 0),
+              {
+                [Op.like]: `%${name}%`
+              }
+            ]
+          }
+        },
+        order: [['updatedAt', 'DESC']],
       });
-  };
+
+      const total = await BannerModel.count();
+
+      console.log(total)
+
+      requestHandler.sendSucceed(res, { total, data });
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+
+  }
+  async AddBanner(req, res) {
+    try {
+      const banner = req.body;
+
+      if (banner == null || ('' + banner.name).length === 0 || ('' + banner.code).length === 0) {
+        requestHandler.sendClientError(res, "invalid input");
+        return;
+      }
+
+      const bannerObj = await BannerModel.create(banner);
+      await bannerObj.save();
+
+      requestHandler.sendSucceed(res);
+    } catch (err) {
+      console.log(err)
+      requestHandler.sendError(res);
+    }
+  }
+
+  async UpdateBanner(req, res) {
+    try {
+      const banner = req.body;
+
+      if (banner == null || ('' + banner.name).length === 0 || ('' + banner.code).length === 0) {
+        requestHandler.sendClientError(res, "invalid input");
+        return;
+      }
+
+      const bannerObj = await BannerModel.update(banner, {
+        where: {
+          id: banner.id
+        }
+      });
+
+      requestHandler.sendSucceed(res);
+    } catch (err) {
+      console.log(err)
+      requestHandler.sendError(res);
+    }
+  }
+
+  async DeleteBanner(req, res) {
+    try {
+      const banner = req.body;
+
+      if (banner == null || ('' + banner.name).length === 0 || ('' + banner.code).length === 0) {
+        requestHandler.sendClientError(res, "invalid input");
+        return;
+      }
+
+      const bannerObj = await BannerModel.destroy({
+        where: {
+          id: banner.id
+        }
+      });
+
+      requestHandler.sendSucceed(res);
+    } catch (err) {
+      console.log(err)
+      requestHandler.sendError(res);
+    }
+  }
+
 }
 
 export default new BannerController();
