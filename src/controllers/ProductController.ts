@@ -6,7 +6,6 @@ const requestHandler = new RequestHandler();
 const readXlsxFile = require("read-excel-file/node");
 
 class ProductController {
-
   async GetProducts(req, res) {
     try {
       const { page, limit, name = "" } = req.query;
@@ -43,11 +42,17 @@ class ProductController {
   async AddProduct(req, res) {
     try {
       const product = req.body;
-      const childFiles = req.files['child-files'];
-      const mainFile = req.files['main-file'];
+      const childFiles = req.files["child-files"];
+      const mainFile = req.files["main-file"];
 
-      product.mainFileUrl = mainFile[0]?.filename;
-      product.childsFilesUrl = JSON.stringify(childFiles.map(childFile => childFile.filename));
+      if (mainFile) {
+        product.mainFileUrl = mainFile[0]?.filename;
+      }
+      if (childFiles) {
+        product.childsFilesUrl = JSON.stringify(
+          childFiles.map((childFile) => childFile.filename)
+        );
+      }
 
       const productObj = await ProductModel.create(product);
       await productObj.save();
@@ -59,6 +64,38 @@ class ProductController {
     }
   }
 
+  async UpdateProduct(req, res) {
+    try {
+      const product = req.body;
+      const childFiles = req.files["child-files"];
+      const mainFile = req.files["main-file"];
+
+      if (mainFile) {
+        product.mainFileUrl = mainFile[0]?.filename;
+      }
+      if (childFiles) {
+        product.childsFilesUrl = JSON.stringify(
+          childFiles.map((childFile) => childFile.filename)
+        );
+      }
+
+      const productObj = await ProductModel.update(
+        {
+          name: product.name,
+        },
+        {
+          where: {
+            id: product.id,
+          },
+        }
+      );
+
+      requestHandler.sendSucceed(res);
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+  }
 }
 
 export default new ProductController();

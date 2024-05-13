@@ -3,7 +3,6 @@ import { BannerModel } from "../models";
 import { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
 
-
 const readXlsxFile = require("read-excel-file/node");
 
 class BannerController {
@@ -14,7 +13,9 @@ class BannerController {
       }
 
       let path =
-        global.__basedir + "/resources/static/assets/uploads/" + req.file.filename;
+        global.__basedir +
+        "/resources/static/assets/uploads/" +
+        req.file.filename;
 
       const rows = await readXlsxFile(path);
       rows.shift();
@@ -30,11 +31,13 @@ class BannerController {
         banners.push(banner);
       });
 
-      var result = await BannerModel.bulkCreate(banners, { ignoreDuplicates: true });
+      var result = await BannerModel.bulkCreate(banners, {
+        ignoreDuplicates: true,
+      });
 
       res.send({
-        "ok": true,
-      })
+        ok: true,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -43,10 +46,8 @@ class BannerController {
     }
   }
   async GetBanners(req, res) {
-
     try {
-
-      const { page, limit, name = '' } = req.query;
+      const { page, limit, name = "" } = req.query;
 
       const data = await BannerModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
@@ -54,32 +55,39 @@ class BannerController {
         where: {
           name: {
             [Op.and]: [
-              Sequelize.where(Sequelize.fn('LENGTH', Sequelize.col('name')), '>', 0),
+              Sequelize.where(
+                Sequelize.fn("LENGTH", Sequelize.col("name")),
+                ">",
+                0
+              ),
               {
-                [Op.like]: `%${name}%`
-              }
-            ]
-          }
+                [Op.like]: `%${name}%`,
+              },
+            ],
+          },
         },
-        order: [['updatedAt', 'DESC']],
+        order: [["updatedAt", "DESC"]],
       });
 
       const total = await BannerModel.count();
 
-      console.log(total)
+      console.log(total);
 
       requestHandler.sendSucceed(res, { total, data });
     } catch (err) {
       console.log(err);
       requestHandler.sendError(res);
     }
-
   }
   async AddBanner(req, res) {
     try {
       const banner = req.body;
 
-      if (banner == null || ('' + banner.name).length === 0 || ('' + banner.code).length === 0) {
+      if (
+        banner == null ||
+        ("" + banner.name).length === 0 ||
+        ("" + banner.code).length === 0
+      ) {
         requestHandler.sendClientError(res, "invalid input");
         return;
       }
@@ -89,7 +97,7 @@ class BannerController {
 
       requestHandler.sendSucceed(res);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       requestHandler.sendError(res);
     }
   }
@@ -98,20 +106,24 @@ class BannerController {
     try {
       const banner = req.body;
 
-      if (banner == null || ('' + banner.name).length === 0 || ('' + banner.code).length === 0) {
+      if (
+        banner == null ||
+        ("" + banner.name).length === 0 ||
+        ("" + banner.code).length === 0
+      ) {
         requestHandler.sendClientError(res, "invalid input");
         return;
       }
 
       const bannerObj = await BannerModel.update(banner, {
         where: {
-          id: banner.id
-        }
+          id: banner.id,
+        },
       });
 
       requestHandler.sendSucceed(res);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       requestHandler.sendError(res);
     }
   }
@@ -120,24 +132,27 @@ class BannerController {
     try {
       const banner = req.body;
 
-      if (banner == null || ('' + banner.name).length === 0 || ('' + banner.code).length === 0) {
+      if (
+        banner == null ||
+        ("" + banner.name).length === 0 ||
+        ("" + banner.code).length === 0
+      ) {
         requestHandler.sendClientError(res, "invalid input");
         return;
       }
 
       const bannerObj = await BannerModel.destroy({
         where: {
-          id: banner.id
-        }
+          id: banner.id,
+        },
       });
 
       requestHandler.sendSucceed(res);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       requestHandler.sendError(res);
     }
   }
-
 }
 
 export default new BannerController();
