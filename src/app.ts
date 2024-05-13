@@ -17,6 +17,7 @@ class App {
     global.__basedir = __dirname + "/..";
 
     this.app.use(cors());
+    this.app.use('/public', express.static('uploads'))
 
     this.app.set('views', './src/views');
     this.app.set('view engine', 'ejs');
@@ -32,6 +33,7 @@ class App {
     this.app.get('/login', (req, res) => {
       res.render('auth/login');
     });
+
   }
 }
 

@@ -7,6 +7,18 @@ const Product = sequelize.define(
         name: {
             type: DataTypes.STRING,
         },
+        mainFileUrl: {
+            type: DataTypes.STRING,
+        },
+        mainFileCLDId: {
+            type: DataTypes.STRING,
+        },
+        childsFilesUrl: { // json
+            type: DataTypes.STRING,
+        },
+        childsFilesCLDId: { // json
+            type: DataTypes.STRING,
+        },
         code: {
             type: DataTypes.STRING,
         },
@@ -15,11 +27,9 @@ const Product = sequelize.define(
         },
         loginType: {
             type: DataTypes.STRING,
-
         },
         operatingSystem: {
             type: DataTypes.STRING,
-
         },
         gemChono: {
             type: DataTypes.STRING,
