@@ -10,6 +10,7 @@ const cpUpload = productMulter.fields([
 
 router.post("/add-product", cpUpload, ProductController.AddProduct);
 router.put("/update-product", cpUpload, ProductController.UpdateProduct);
+router.delete("/delete-product", cpUpload, ProductController.DeleteProduct);
 router.get("/get-products", ProductController.GetProducts);
 
 export default router;

@@ -46,6 +46,10 @@ const Product = sequelize.define(
   {
     tableName: "Products",
     paranoid: true,
+    indexes: [{
+      unique: true,
+      fields: ['code']
+    }]
   }
 );
 

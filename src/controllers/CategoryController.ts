@@ -1,6 +1,6 @@
 import { Op, Sequelize, where } from "sequelize";
 import { CategoryModel } from "../models";
-import { RequestHandler } from "../utils";
+import utils, { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
 
 const readXlsxFile = require("read-excel-file/node");
@@ -81,16 +81,22 @@ class CategoryController {
   async AddCategory(req, res) {
     try {
       const category = req.body;
+      const mainFile = req.files["main-file"];
+
+      if (mainFile) {
+        category.mainFileUrl = mainFile[0]?.filename;
+      }
 
       if (
         category == null ||
         ("" + category.name).length === 0 ||
-        ("" + category.code).length === 0 ||
         ("" + category.bannerCode).length === 0
       ) {
         requestHandler.sendClientError(res, "invalid input");
         return;
       }
+
+      category.code = `CA-${utils.generateUniqueString(6)}`;
 
       const categoryObj = await CategoryModel.create(category);
       await categoryObj.save();

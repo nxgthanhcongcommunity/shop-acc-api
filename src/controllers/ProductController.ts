@@ -67,21 +67,35 @@ class ProductController {
   async UpdateProduct(req, res) {
     try {
       const product = req.body;
+
       const childFiles = req.files["child-files"];
       const mainFile = req.files["main-file"];
 
       if (mainFile) {
         product.mainFileUrl = mainFile[0]?.filename;
+        product.mainFileCLDId = '';
       }
       if (childFiles) {
         product.childsFilesUrl = JSON.stringify(
           childFiles.map((childFile) => childFile.filename)
         );
+        product.childsFilesCLDId = '';
       }
 
       const productObj = await ProductModel.update(
         {
           name: product.name,
+          mainFileUrl: product.mainFileUrl,
+          mainFileCLDId: product.mainFileCLDId,
+          childsFilesUrl: product.childsFilesUrl,
+          childsFilesCLDId: product.childsFilesCLDId,
+          code: product.code,
+          server: product.server,
+          loginType: product.loginType,
+          operatingSystem: product.operatingSystem,
+          gemChono: product.gemChono,
+          descriptions: product.descriptions,
+          categoryCode: product.categoryCode,
         },
         {
           where: {
@@ -96,6 +110,29 @@ class ProductController {
       requestHandler.sendError(res);
     }
   }
+
+  async DeleteProduct(req, res) {
+    try {
+      const product = req.body;
+
+      if (product == null) {
+        requestHandler.sendClientError(res, "invalid input");
+        return;
+      }
+
+      await ProductModel.destroy({
+        where: {
+          id: product.id,
+        },
+      });
+
+      requestHandler.sendSucceed(res);
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+  }
+
 }
 
 export default new ProductController();

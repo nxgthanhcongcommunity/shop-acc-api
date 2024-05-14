@@ -112,6 +112,7 @@ class AuthController {
           photo: userInfo.picture,
           providerName: "google",
           role: ROLE.MEMBER,
+          passwordHash: "",
         });
         await newAccount.save();
         createdAccount = newAccount;
@@ -122,8 +123,9 @@ class AuthController {
         role: createdAccount.role,
       });
 
-      res.status(200).json({
+      requestHandler.sendSucceed(res, {
         token,
+        refreshToken: "",
       });
     } catch (ex) {
       console.log(ex);

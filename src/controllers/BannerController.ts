@@ -1,6 +1,6 @@
 import { Op, Sequelize, where } from "sequelize";
 import { BannerModel } from "../models";
-import { RequestHandler } from "../utils";
+import utils, { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
 
 const readXlsxFile = require("read-excel-file/node");
@@ -83,14 +83,12 @@ class BannerController {
     try {
       const banner = req.body;
 
-      if (
-        banner == null ||
-        ("" + banner.name).length === 0 ||
-        ("" + banner.code).length === 0
-      ) {
+      if (banner == null || ("" + banner.name).length === 0) {
         requestHandler.sendClientError(res, "invalid input");
         return;
       }
+
+      banner.code = `BN-${utils.generateUniqueString(6)}`;
 
       const bannerObj = await BannerModel.create(banner);
       await bannerObj.save();
