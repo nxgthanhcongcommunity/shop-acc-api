@@ -160,6 +160,30 @@ class CategoryController {
       requestHandler.sendError(res);
     }
   }
+
+  async GetCategoriesByBannerCode(req, res) {
+    try {
+      const { code: bannerCode } = req.query;
+
+
+      const data = await CategoryModel.findAll({
+        where: {
+          bannerCode: {
+            [Op.eq]: bannerCode,
+          },
+        },
+        order: [["updatedAt", "DESC"]],
+      });
+
+      requestHandler.sendSucceed(res, data);
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+  }
+
 }
+
+// GetCategoriesByBannerCode
 
 export default new CategoryController();

@@ -12,6 +12,9 @@ const Banner = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        order: {
+            type: DataTypes.INTEGER,
+        },
     },
     {
         tableName: 'Banners',
