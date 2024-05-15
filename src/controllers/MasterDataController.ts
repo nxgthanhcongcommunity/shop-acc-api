@@ -1,24 +1,59 @@
-import { RequestHandler } from "../utils";
-import * as db from '../db';
+import utils, { RequestHandler } from "../utils";
 
 const requestHandler = new RequestHandler();
 
 class MasterDataController {
-    async GetByKey(req, res) {
-        try {
-            // const { key } = req.query;
+  async GetByKey(req, res) {
+    try {
+      const data = {
+        logoUrl: "XoD1.gif",
+        shopName: "Dragonball shop",
+        sliders: [
+          {
+            code: utils.generateUniqueString(6),
+            title: "Title cho slide số 1",
+            imgUrl: "1143254.jpg",
+          },
+          {
+            code: utils.generateUniqueString(6),
+            title: "Title cho slide số 2",
+            imgUrl: "2312321.jpg",
+          },
+          {
+            code: utils.generateUniqueString(6),
+            title: "Title cho slide số 3",
+            imgUrl: "2344324.jpg",
+          },
+        ],
+        banners: [
+          {
+            code: "BN-WJEPC2",
+            column: {
+              pc: 4,
+              mb: 1,
+            },
+          },
+          {
+            code: "BN-WJEPC2",
+            column: {
+              pc: 2,
+              mb: 1,
+            },
+          },
+          {
+            code: "BN-WJEPC2",
+          },
+          {
+            code: "BN-WJEPC2",
+          },
+        ],
+      };
 
-            // const result = await db.queryFirstOrDefaultAsync('select * from masterdata where key=$1', [key])
-            // if (result == null) {
-            //     requestHandler.sendNotFound(res, "data not found");
-            // }
-
-            // const data = JSON.parse(result.value);
-            requestHandler.sendSucceed(res, "111");
-        } catch (ex) {
-            requestHandler.sendError(res);
-        }
+      requestHandler.sendSucceed(res, data);
+    } catch (ex) {
+      requestHandler.sendError(res);
     }
+  }
 }
 
 export default new MasterDataController();

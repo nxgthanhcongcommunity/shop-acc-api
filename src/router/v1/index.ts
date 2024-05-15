@@ -9,7 +9,7 @@ import categoryRouter from "./categoryRouter";
 import productRouter from "./productRouter";
 import accountRouter from "./accountRouter";
 
-appRouter.use("/master-data", verifyTokenMiddleware([ROLE.ADMIN]), masterDataRouter);
+appRouter.use("/master-data", masterDataRouter); //verifyTokenMiddleware([ROLE.ADMIN])
 appRouter.use("/auth", authRouter);
 appRouter.use("/banner", bannerRouter);
 appRouter.use("/category", categoryRouter);
