@@ -12,5 +12,9 @@ router.post("/add-product", cpUpload, ProductController.AddProduct);
 router.put("/update-product", cpUpload, ProductController.UpdateProduct);
 router.delete("/delete-product", cpUpload, ProductController.DeleteProduct);
 router.get("/get-products", ProductController.GetProducts);
+router.get("/get-products-by-category-code", ProductController.GetProductsByCategoryCode);
+router.get("/get-product-by-code", ProductController.GetProductCode);
+
+//get-product-by-code
 
 export default router;

@@ -14,20 +14,6 @@ class AccountController {
       const data = await AccountModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
         limit: limit || null,
-        // where: {
-        //   givenName: {
-        //     [Op.and]: [
-        //       Sequelize.where(
-        //         Sequelize.fn("LENGTH", Sequelize.col("name")),
-        //         ">",
-        //         0
-        //       ),
-        //       {
-        //         [Op.like]: `%${name}%`,
-        //       },
-        //     ],
-        //   },
-        // },
         order: [["updatedAt", "DESC"]],
       });
 

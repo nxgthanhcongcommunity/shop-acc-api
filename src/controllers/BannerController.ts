@@ -70,15 +70,27 @@ class BannerController {
       });
 
       const total = await BannerModel.count();
-
-      console.log(total);
-
       requestHandler.sendSucceed(res, { total, data });
     } catch (err) {
       console.log(err);
       requestHandler.sendError(res);
     }
   }
+
+  async GetBannerByCode(req, res) {
+    const { code } = req.query;
+
+    const data = await BannerModel.findOne({
+      where: {
+        code: {
+          [Op.eq]: code,
+        },
+      },
+    });
+
+    requestHandler.sendSucceed(res, data);
+  }
+
   async AddBanner(req, res) {
     try {
       const banner = req.body;

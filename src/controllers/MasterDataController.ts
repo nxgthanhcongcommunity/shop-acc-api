@@ -6,7 +6,7 @@ class MasterDataController {
   async GetByKey(req, res) {
     try {
       const data = {
-        logoUrl: "XoD1.gif",
+        logoUrl: "dgb-logo.png",
         shopName: "Dragonball shop",
         sliders: [
           {
@@ -27,24 +27,25 @@ class MasterDataController {
         ],
         banners: [
           {
-            code: "BN-WJEPC2",
+            code: "BN-5NWKQO",
             column: {
               pc: 4,
               mb: 1,
             },
+            isSeeMore: true,
           },
           {
-            code: "BN-WJEPC2",
+            code: "BN-B8AXNI",
             column: {
               pc: 2,
               mb: 1,
             },
           },
           {
-            code: "BN-WJEPC2",
+            code: "BN-W8VJQQ",
           },
           {
-            code: "BN-WJEPC2",
+            code: "BN-MPIWVW",
           },
         ],
       };

@@ -10,10 +10,10 @@ const Category = sequelize.define(
         code: {
             type: DataTypes.STRING,
         },
-        mainFileUrl: {
+        bannerCode: {
             type: DataTypes.STRING,
         },
-        bannerCode: {
+        mainFileUrl: {
             type: DataTypes.STRING,
         }
     },

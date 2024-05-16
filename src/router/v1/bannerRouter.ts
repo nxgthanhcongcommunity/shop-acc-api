@@ -9,6 +9,8 @@ router.post(
   BannerController.Upload
 );
 router.get("/get-banners", BannerController.GetBanners);
+router.get("/get-banner-by-code", BannerController.GetBannerByCode);
+//
 router.post("/add-banner", BannerController.AddBanner);
 router.put("/update-banner", BannerController.UpdateBanner);
 router.delete("/delete-banner", BannerController.DeleteBanner);

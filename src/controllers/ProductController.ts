@@ -133,6 +133,58 @@ class ProductController {
     }
   }
 
+  async GetProductsByCategoryCode(req, res) {
+    try {
+      const { page, limit, name = "", code: categoryCode } = req.query;
+
+      const data = await ProductModel.findAll({
+        offset: page > 0 ? (page - 1) * limit : null,
+        limit: limit || null,
+        where: {
+          name: {
+            [Op.and]: [
+              Sequelize.where(
+                Sequelize.fn("LENGTH", Sequelize.col("name")),
+                ">",
+                0
+              ),
+              {
+                [Op.like]: `%${name}%`,
+              },
+            ],
+          },
+          categoryCode: categoryCode,
+        },
+        order: [["updatedAt", "DESC"]],
+      });
+
+      const total = await ProductModel.count();
+
+      requestHandler.sendSucceed(res, { total, data });
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+  }
+
+  async GetProductCode(req, res) {
+    try {
+      const { code: productCode } = req.query;
+
+      const data = await ProductModel.findOne({
+        where: {
+          code: productCode,
+        },
+        order: [["updatedAt", "DESC"]],
+      });
+
+      requestHandler.sendSucceed(res, data);
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+  }
+
 }
 
 export default new ProductController();

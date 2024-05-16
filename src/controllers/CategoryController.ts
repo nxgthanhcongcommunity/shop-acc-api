@@ -1,6 +1,7 @@
-import { Op, Sequelize, where } from "sequelize";
-import { CategoryModel } from "../models";
+import { Op, QueryTypes, Sequelize, where } from "sequelize";
+import { CategoryModel, ProductModel } from "../models";
 import utils, { RequestHandler } from "../utils";
+import { sequelize } from "../db";
 const requestHandler = new RequestHandler();
 
 const readXlsxFile = require("read-excel-file/node");
@@ -165,17 +166,31 @@ class CategoryController {
     try {
       const { code: bannerCode } = req.query;
 
-
-      const data = await CategoryModel.findAll({
-        where: {
-          bannerCode: {
-            [Op.eq]: bannerCode,
-          },
-        },
-        order: [["updatedAt", "DESC"]],
+      const records = await sequelize.query(`
+        select 
+          c.id, 
+          c.code, 
+          c.name, 
+          c."mainFileUrl", 
+          count(p.code) as "totalProduct"
+        from 
+          public."Categories" c 
+          left join public."Products" p on c.code = p."categoryCode"
+        where
+          c."deletedAt" is null 
+          and p."deletedAt" is null
+          and c."bannerCode" = :pBannerCode
+        group by 
+          c.id, c.code, c.name, c."mainFileUrl"
+      `, {
+        replacements: { pBannerCode: bannerCode },
+        type: QueryTypes.SELECT,
       });
 
-      requestHandler.sendSucceed(res, data);
+      // Verify the structure of records
+      console.log(records);
+
+      requestHandler.sendSucceed(res, records);
     } catch (err) {
       console.log(err);
       requestHandler.sendError(res);
@@ -183,7 +198,5 @@ class CategoryController {
   }
 
 }
-
-// GetCategoriesByBannerCode
 
 export default new CategoryController();
