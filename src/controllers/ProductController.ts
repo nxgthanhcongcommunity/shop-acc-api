@@ -171,14 +171,16 @@ class ProductController {
     try {
       const { code: productCode } = req.query;
 
-      const data = await ProductModel.findOne({
+      const product = await ProductModel.findOne({
         where: {
           code: productCode,
         },
         order: [["updatedAt", "DESC"]],
       });
 
-      requestHandler.sendSucceed(res, data);
+      const relatedProducts = await ProductModel.findAll({ offset: 0, limit: 4 });
+
+      requestHandler.sendSucceed(res, { product, relatedProducts });
     } catch (err) {
       console.log(err);
       requestHandler.sendError(res);
