@@ -1,7 +1,7 @@
 import { generateToken } from "../utils/jwtUtils";
 import { ROLE } from "../constants";
 import { AccountModel } from "../models";
-import { RequestHandler } from "../utils";
+import utils, { RequestHandler } from "../utils";
 import "../utils/passport";
 import axios from "axios";
 
@@ -104,6 +104,7 @@ class AuthController {
 
       if (!accountInDatabase) {
         const newAccount = await AccountModel.create({
+          code: `USR-${utils.generateUniqueString(6)}`,
           idAtProvider: userInfo.id,
           familyName: userInfo.family_name,
           givenName: userInfo.given_name,
@@ -120,13 +121,19 @@ class AuthController {
 
       const token = generateToken({
         id: createdAccount.id,
-        role: createdAccount.role,
+        code: createdAccount.code,
+        familyName: createdAccount.familyName,
+        givenName: createdAccount.givenName,
+        email: createdAccount.email,
+        photo: createdAccount.photo,
       });
 
       requestHandler.sendSucceed(res, {
         token,
         refreshToken: "",
       });
+
+      // requestHandler.sendError(res);
     } catch (ex) {
       console.log(ex);
       requestHandler.sendError(res);

@@ -1,6 +1,6 @@
 import { Op, Sequelize, where } from "sequelize";
 import { CategoryModel, ProductModel } from "../models";
-import { RequestHandler } from "../utils";
+import utils, { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
 
 const readXlsxFile = require("read-excel-file/node");
@@ -54,6 +54,8 @@ class ProductController {
         );
       }
 
+      product.code = `PRD-${utils.generateUniqueString(6)}`;
+
       const productObj = await ProductModel.create(product);
       await productObj.save();
 
@@ -73,13 +75,13 @@ class ProductController {
 
       if (mainFile) {
         product.mainFileUrl = mainFile[0]?.filename;
-        product.mainFileCLDId = '';
+        product.mainFileCLDId = "";
       }
       if (childFiles) {
         product.childsFilesUrl = JSON.stringify(
           childFiles.map((childFile) => childFile.filename)
         );
-        product.childsFilesCLDId = '';
+        product.childsFilesCLDId = "";
       }
 
       const productObj = await ProductModel.update(
@@ -178,7 +180,10 @@ class ProductController {
         order: [["updatedAt", "DESC"]],
       });
 
-      const relatedProducts = await ProductModel.findAll({ offset: 0, limit: 4 });
+      const relatedProducts = await ProductModel.findAll({
+        offset: 0,
+        limit: 4,
+      });
 
       requestHandler.sendSucceed(res, { product, relatedProducts });
     } catch (err) {
@@ -186,7 +191,6 @@ class ProductController {
       requestHandler.sendError(res);
     }
   }
-
 }
 
 export default new ProductController();

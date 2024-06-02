@@ -3,8 +3,9 @@ import "dotenv/config";
 
 const { RESET_DATABASE } = process.env;
 
-export const sequelize = new Sequelize("shop-acc", "postgres", "password", {
-  host: "10.253.2.18",
+export const sequelize = new Sequelize("shop-acc", "postgres", "qqq111!!!", {
+  host: "localhost",
+  // host: "10.253.2.18",
   port: 5432,
   dialect: "postgres",
 
