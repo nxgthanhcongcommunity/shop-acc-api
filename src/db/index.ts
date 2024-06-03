@@ -20,6 +20,7 @@ export const sequelize = new Sequelize("shop-acc", "postgres", "qqq111!!!", {
   }
 
   if (RESET_DATABASE === "true") {
+    // await sequelize.sync();
     await sequelize.sync({ alter: true });
     // await sequelize.sync({ force: true });
     console.log("All models were synchronized successfully.");

@@ -27,6 +27,7 @@ class MasterDataController {
         ],
         banners: [
           {
+            name: "Acc sẵn char giá rẻ đến vip",
             code: "BN-5NWKQO",
             column: {
               pc: 4,
@@ -35,6 +36,7 @@ class MasterDataController {
             isSeeMore: true,
           },
           {
+            name: "Acc reroll abc",
             code: "BN-B8AXNI",
             column: {
               pc: 2,
@@ -42,9 +44,11 @@ class MasterDataController {
             },
           },
           {
+            name: "Acc trên 50k",
             code: "BN-W8VJQQ",
           },
           {
+            name: "Acc trên 100k",
             code: "BN-MPIWVW",
           },
         ],

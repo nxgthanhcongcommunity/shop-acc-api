@@ -7,6 +7,9 @@ const Product = sequelize.define(
     name: {
       type: DataTypes.STRING,
     },
+    price: {
+      type: DataTypes.DECIMAL,
+    },
     mainFileUrl: {
       type: DataTypes.STRING,
     },
