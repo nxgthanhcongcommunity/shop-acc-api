@@ -1,4 +1,4 @@
-import { TransactionModel } from "../models";
+import { BalanceModel, TransactionModel } from "../models";
 import { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
 
@@ -23,6 +23,24 @@ class TransactionController {
       });
 
       const result = await transactionObj.save();
+
+      const balance = await BalanceModel.findOne({ where: { accountId: 1 } });
+
+      if (balance) {
+        await BalanceModel.increment(
+          'amount',
+          {
+            by: 2000000000,
+            where: {
+              accountId: 1,
+            },
+          },
+        );
+      } else {
+        await BalanceModel.create(
+          { accountId: 1, amount: 1000000000 },
+        );
+      }
 
       // requestHandler.sendSucceed(res, );
       res.send({ success: true });

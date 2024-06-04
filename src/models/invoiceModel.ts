@@ -16,6 +16,9 @@ const Invoice = sequelize.define(
         paymentStatus: {
             type: DataTypes.STRING,
         },
+        paymentMethod: {
+            type: DataTypes.STRING,
+        },
     },
     {
         tableName: 'Invoices',
