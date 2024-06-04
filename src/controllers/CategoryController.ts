@@ -7,46 +7,6 @@ const requestHandler = new RequestHandler();
 const readXlsxFile = require("read-excel-file/node");
 
 class CategoryController {
-  async Upload(req, res) {
-    try {
-      if (req.file == undefined) {
-        return res.status(400).send("Please upload an excel file!");
-      }
-
-      let path =
-        global.__basedir +
-        "/resources/static/assets/uploads/" +
-        req.file.filename;
-
-      const rows = await readXlsxFile(path);
-      rows.shift();
-
-      let categories = [];
-
-      rows.forEach((row) => {
-        let category = {
-          name: row[0],
-          code: row[1],
-          bannerCode: row[2],
-        };
-
-        categories.push(category);
-      });
-
-      var result = await CategoryModel.bulkCreate(categories, {
-        ignoreDuplicates: true,
-      });
-
-      res.send({
-        ok: true,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({
-        message: "Could not upload the file: " + req.file.originalname,
-      });
-    }
-  }
   async GetCategories(req, res) {
     try {
       const { page, limit, name = "" } = req.query;
@@ -166,7 +126,8 @@ class CategoryController {
     try {
       const { code: bannerCode } = req.query;
 
-      const records = await sequelize.query(`
+      const records = await sequelize.query(
+        `
         select 
           c.id, 
           c.code, 
@@ -182,10 +143,12 @@ class CategoryController {
           and c."bannerCode" = :pBannerCode
         group by 
           c.id, c.code, c.name, c."mainFileUrl"
-      `, {
-        replacements: { pBannerCode: bannerCode },
-        type: QueryTypes.SELECT,
-      });
+      `,
+        {
+          replacements: { pBannerCode: bannerCode },
+          type: QueryTypes.SELECT,
+        }
+      );
 
       // Verify the structure of records
       console.log(records);
@@ -196,7 +159,6 @@ class CategoryController {
       requestHandler.sendError(res);
     }
   }
-
 }
 
 export default new CategoryController();
