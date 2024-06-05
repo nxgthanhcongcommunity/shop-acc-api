@@ -41,12 +41,15 @@ class ProductController {
 
   async AddProduct(req, res) {
     try {
+
+      console.log('req.body: ', req.body);
+
       const product = req.body;
 
       product.code = `PRD-${utils.generateUniqueString(6)}`;
 
       const productObj = await ProductModel.create(product);
-      await productObj.save();
+      // console.log(productObj.id);
 
       requestHandler.sendSucceed(res);
     } catch (err) {
