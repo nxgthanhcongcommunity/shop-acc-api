@@ -42,11 +42,11 @@ class CategoryController {
   async AddCategory(req, res) {
     try {
       const category = req.body;
-      const mainFile = req.files["main-file"];
+      // const mainFile = req.files["main-file"];
 
-      if (mainFile) {
-        category.mainFileUrl = mainFile[0]?.filename;
-      }
+      // if (mainFile) {
+      //   category.mainFileUrl = mainFile[0]?.filename;
+      // }
 
       if (
         category == null ||
@@ -149,9 +149,6 @@ class CategoryController {
           type: QueryTypes.SELECT,
         }
       );
-
-      // Verify the structure of records
-      console.log(records);
 
       requestHandler.sendSucceed(res, records);
     } catch (err) {

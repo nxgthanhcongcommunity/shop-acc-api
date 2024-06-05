@@ -1,7 +1,7 @@
+import { QueryTypes } from "sequelize";
+import { sequelize } from "../db";
 import { BalanceModel, InvoiceDetailModel, InvoiceModel, QuantityModel, SendMailModel } from "../models";
 import { RequestHandler } from "../utils";
-import nodemailer from "nodemailer";
-import schedule from "node-schedule";
 
 const requestHandler = new RequestHandler();
 
@@ -84,6 +84,41 @@ class InvoiceController {
       requestHandler.sendError(res);
     }
   }
+
+  async Get(req, res) {
+    try {
+
+      const { page, limit, name = "" } = req.query;
+
+      const records = await sequelize.query(
+        `
+        select 
+          a.Id as accountId,
+          a.email,
+          inv."totalAmount",
+          inv.discount,
+          inv."paymentStatus",
+          inv."paymentMethod",
+          inv."createdAt"
+        from
+          public."Invoices" inv
+          inner join public."Accounts" a on a.Id = inv."accountId"
+        -- limit :pLimit offet :pOffset
+      `,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      requestHandler.sendSucceed(res, { total: 0, data: records });
+
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+
+  }
+
 }
 
 export default new InvoiceController();

@@ -42,17 +42,6 @@ class ProductController {
   async AddProduct(req, res) {
     try {
       const product = req.body;
-      const childFiles = req.files["child-files"];
-      const mainFile = req.files["main-file"];
-
-      if (mainFile) {
-        product.mainFileUrl = mainFile[0]?.filename;
-      }
-      if (childFiles) {
-        product.childsFilesUrl = JSON.stringify(
-          childFiles.map((childFile) => childFile.filename)
-        );
-      }
 
       product.code = `PRD-${utils.generateUniqueString(6)}`;
 
@@ -69,20 +58,6 @@ class ProductController {
   async UpdateProduct(req, res) {
     try {
       const product = req.body;
-
-      const childFiles = req.files["child-files"];
-      const mainFile = req.files["main-file"];
-
-      if (mainFile) {
-        product.mainFileUrl = mainFile[0]?.filename;
-        product.mainFileCLDId = "";
-      }
-      if (childFiles) {
-        product.childsFilesUrl = JSON.stringify(
-          childFiles.map((childFile) => childFile.filename)
-        );
-        product.childsFilesCLDId = "";
-      }
 
       const productObj = await ProductModel.update(
         {

@@ -1,6 +1,11 @@
-providerId: req.user.id,
-        familyName: req.user.name.familyName,
-        givenName: req.user.name.givenName,
-        email: req.user.emails[0].value,
-        photo: req.user.photos[0].value,
-        provider: req.user.provider,
+const childFiles = req.files["child-files"];
+      const mainFile = req.files["main-file"];
+
+      if (mainFile) {
+        product.mainFileUrl = mainFile[0]?.filename;
+      }
+      if (childFiles) {
+        product.childsFilesUrl = JSON.stringify(
+          childFiles.map((childFile) => childFile.filename)
+        );
+      }

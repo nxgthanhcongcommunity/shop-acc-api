@@ -1,5 +1,7 @@
+import { QueryTypes } from "sequelize";
 import { BalanceModel } from "../models";
 import { RequestHandler } from "../utils";
+import { sequelize } from "../db";
 const requestHandler = new RequestHandler();
 
 class BalanceController {
@@ -15,6 +17,40 @@ class BalanceController {
       console.log(err);
       requestHandler.sendError(res);
     }
+  }
+
+  async Get(req, res) {
+
+    try {
+
+      const { page, limit, name = "" } = req.query;
+
+      const records = await sequelize.query(
+        `
+        select 
+          a.Id as "accountId", 
+          b.Id as "balanceId", 
+          a.email,
+          b.amount
+        from 
+          public."Accounts" a 
+          left join public."Balances" b on a.id = b."accountId"
+        order by 
+          b."updatedAt" desc
+        -- limit :pLimit offet :pOffset
+      `,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      requestHandler.sendSucceed(res, { total: 0, data: records });
+
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+
   }
 }
 
