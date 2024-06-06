@@ -1,9 +1,7 @@
-import { Op, Sequelize, where } from "sequelize";
-import { CategoryModel, ProductModel } from "../models";
+import { Op, } from "sequelize";
+import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
-
-const readXlsxFile = require("read-excel-file/node");
 
 class ProductController {
   async GetProducts(req, res) {
@@ -15,19 +13,12 @@ class ProductController {
         limit: limit || null,
         where: {
           name: {
-            [Op.and]: [
-              Sequelize.where(
-                Sequelize.fn("LENGTH", Sequelize.col("name")),
-                ">",
-                0
-              ),
-              {
-                [Op.like]: `%${name}%`,
-              },
-            ],
+            [Op.like]: `%${name}%`
           },
         },
         order: [["updatedAt", "DESC"]],
+        include: [QuantityModel, CategoryModel],
+
       });
 
       const total = await ProductModel.count();
@@ -42,14 +33,17 @@ class ProductController {
   async AddProduct(req, res) {
     try {
 
-      console.log('req.body: ', req.body);
-
       const product = req.body;
+
+      const { quantity } = product;
 
       product.code = `PRD-${utils.generateUniqueString(6)}`;
 
       const productObj = await ProductModel.create(product);
-      // console.log(productObj.id);
+      await QuantityModel.create({
+        productId: productObj.id,
+        currentQuantity: quantity.currentQuantity,
+      });
 
       requestHandler.sendSucceed(res);
     } catch (err) {
@@ -61,8 +55,9 @@ class ProductController {
   async UpdateProduct(req, res) {
     try {
       const product = req.body;
+      const { quantity } = product;
 
-      const productObj = await ProductModel.update(
+      await ProductModel.update(
         {
           name: product.name,
           mainFileUrl: product.mainFileUrl,
@@ -75,7 +70,7 @@ class ProductController {
           operatingSystem: product.operatingSystem,
           gemChono: product.gemChono,
           descriptions: product.descriptions,
-          categoryCode: product.categoryCode,
+          categoryId: product.categoryId,
         },
         {
           where: {
@@ -84,6 +79,13 @@ class ProductController {
         }
       );
 
+      await QuantityModel.update(quantity,
+        {
+          where: {
+            productId: quantity.productId,
+          },
+        }
+      )
       requestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
@@ -106,6 +108,14 @@ class ProductController {
         },
       });
 
+      await QuantityModel.destroy(
+        {
+          where: {
+            productId: product.id,
+          },
+        }
+      )
+
       requestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
@@ -120,21 +130,21 @@ class ProductController {
       const data = await ProductModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
         limit: limit || null,
-        where: {
-          name: {
-            [Op.and]: [
-              Sequelize.where(
-                Sequelize.fn("LENGTH", Sequelize.col("name")),
-                ">",
-                0
-              ),
-              {
-                [Op.like]: `%${name}%`,
-              },
-            ],
-          },
-          categoryCode: categoryCode,
-        },
+        // where: {
+        //   name: {
+        //     [Op.and]: [
+        //       Sequelize.where(
+        //         Sequelize.fn("LENGTH", Sequelize.col("name")),
+        //         ">",
+        //         0
+        //       ),
+        //       {
+        //         [Op.like]: `%${name}%`,
+        //       },
+        //     ],
+        //   },
+        //   categoryCode: categoryCode,
+        // },
         order: [["updatedAt", "DESC"]],
       });
 

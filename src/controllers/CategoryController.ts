@@ -16,19 +16,12 @@ class CategoryController {
         limit: limit || null,
         where: {
           name: {
-            [Op.and]: [
-              Sequelize.where(
-                Sequelize.fn("LENGTH", Sequelize.col("name")),
-                ">",
-                0
-              ),
-              {
-                [Op.like]: `%${name}%`,
-              },
-            ],
+            [Op.like]: `%${name}%`
           },
         },
         order: [["updatedAt", "DESC"]],
+        include: [ProductModel],
+
       });
 
       const total = await CategoryModel.count();
@@ -42,11 +35,6 @@ class CategoryController {
   async AddCategory(req, res) {
     try {
       const category = req.body;
-      // const mainFile = req.files["main-file"];
-
-      // if (mainFile) {
-      //   category.mainFileUrl = mainFile[0]?.filename;
-      // }
 
       if (
         category == null ||
@@ -83,7 +71,7 @@ class CategoryController {
         return;
       }
 
-      const categoryObj = await CategoryModel.update(category, {
+      await CategoryModel.update(category, {
         where: {
           id: category.id,
         },
@@ -109,9 +97,15 @@ class CategoryController {
         return;
       }
 
-      const categoryObj = await CategoryModel.destroy({
+      await CategoryModel.destroy({
         where: {
           id: category.id,
+        },
+      });
+
+      await ProductModel.destroy({
+        where: {
+          categoryId: category.id,
         },
       });
 

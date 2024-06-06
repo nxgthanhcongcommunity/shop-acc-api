@@ -1,64 +1,124 @@
+import { Table, Column, Model, DataType, HasOne, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { sequelize } from "../db";
-import { DataTypes } from "sequelize";
+import { Optional } from "sequelize";
+import Category from './categoryModel';
+import Quantity from './quantityModel';
 
-const Product = sequelize.define(
-  "Product",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-    price: {
-      type: DataTypes.DECIMAL,
-    },
-    mainFileUrl: {
-      type: DataTypes.STRING,
-    },
-    mainFileCLDId: {
-      type: DataTypes.STRING,
-    },
-    childsFilesUrl: {
-      // json
-      type: DataTypes.STRING,
-    },
-    childsFilesCLDId: {
-      // json
-      type: DataTypes.STRING,
-    },
-    code: {
-      type: DataTypes.STRING,
-    },
-    server: {
-      type: DataTypes.STRING,
-    },
-    loginType: {
-      type: DataTypes.STRING,
-    },
-    operatingSystem: {
-      type: DataTypes.STRING,
-    },
-    gemChono: {
-      type: DataTypes.STRING,
-    },
-    descriptions: {
-      type: DataTypes.STRING,
-    },
-    categoryCode: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    tableName: "Products",
-    paranoid: true,
-    indexes: [{
-      unique: true,
-      fields: ['code']
-    }]
-  }
-);
+interface IProductAttributes {
+  id: number;
+  name: string;
+  price: number;
+  mainFileUrl: string;
+  mainFileCLDId: string;
+  childsFilesUrl: string;
+  childsFilesCLDId: string;
+  code: string;
+  server: string;
+  loginType: string;
+  operatingSystem: string;
+  gemChono: number;
+  descriptions: string;
+  categoryId: number;
+}
+
+interface IProductCreationAttributes extends Optional<IProductAttributes, 'id'> { }
+
+@Table({
+  timestamps: true,
+  paranoid: true,
+  tableName: "Products",
+})
+class Product extends Model<IProductAttributes, IProductCreationAttributes> {
+
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name!: string;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: false,
+  })
+  price!: number;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  mainFileUrl: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  childsFilesUrl: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  mainFileCLDId!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  childsFilesCLDId!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  code!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  server!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  loginType!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  operatingSystem!: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  gemChono!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  descriptions!: string;
+
+  @ForeignKey(() => Category)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  categoryId!: number;
+
+  @BelongsTo(() => Category, 'categoryId')
+  category: Category;
+
+  @HasOne(() => Quantity, 'productId')
+  quantity: Quantity;
+}
 
 export default Product;

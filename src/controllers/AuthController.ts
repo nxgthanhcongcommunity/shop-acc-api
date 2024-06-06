@@ -1,9 +1,9 @@
-import { generateToken } from "../utils/jwtUtils";
+import axios from "axios";
 import { ROLE } from "../constants";
 import { AccountModel } from "../models";
 import utils, { RequestHandler } from "../utils";
+import { generateToken } from "../utils/jwtUtils";
 import "../utils/passport";
-import axios from "axios";
 
 const { GOOGLE_CLIENT_ID } = process.env;
 const { OAuth2Client } = require("google-auth-library");

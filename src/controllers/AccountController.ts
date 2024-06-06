@@ -1,9 +1,6 @@
-import { Op, Sequelize } from "sequelize";
-import { AccountModel } from "../models";
+import { AccountModel, BalanceModel } from "../models";
 import { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
-
-const readXlsxFile = require("read-excel-file/node");
 
 class AccountController {
 
@@ -15,6 +12,7 @@ class AccountController {
         offset: page > 0 ? (page - 1) * limit : null,
         limit: limit || null,
         order: [["updatedAt", "DESC"]],
+        include: [BalanceModel]
       });
 
       const total = await AccountModel.count();

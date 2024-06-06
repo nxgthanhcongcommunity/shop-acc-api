@@ -1,10 +1,54 @@
-export { default as AccountModel } from "./accountModel"
-export { default as CategoryModel } from "./categoryModel"
-export { default as ProductModel } from "./productModel"
-export { default as KeypairModel } from "./keypairModel"
-export { default as BalanceModel } from "./balanceModel"
-export { default as TransactionModel } from "./transactionModel"
-export { default as InvoiceModel } from "./invoiceModel"
-export { default as InvoiceDetailModel } from "./invoiceDetailModel"
-export { default as QuantityModel } from "./quantityModel"
-export { default as SendMailModel } from "./sendMailModel"
+import AccountModel from "./accountModel"
+import CategoryModel from "./categoryModel"
+import ProductModel from "./productModel"
+import KeypairModel from "./keypairModel"
+import BalanceModel from "./balanceModel"
+import TransactionModel from "./transactionModel"
+import InvoiceModel from "./invoiceModel"
+import InvoiceDetailModel from "./invoiceDetailModel"
+import QuantityModel from "./quantityModel"
+import SendMailModel from "./sendMailModel"
+
+import { Sequelize } from "sequelize-typescript";
+import "dotenv/config";
+
+const { RESET_DATABASE } = process.env;
+
+export const sequelize = new Sequelize("shop-acc", "postgres", "qqq111!!!", {
+    host: "localhost",
+    // host: "10.253.2.18",
+    port: 5432,
+    dialect: "postgres",
+    logging: false,
+});
+
+sequelize.addModels([ProductModel, QuantityModel, CategoryModel, AccountModel, BalanceModel, SendMailModel]);
+
+(async () => {
+    try {
+        await sequelize.authenticate();
+    } catch (error) {
+        console.error("Unable to connect to the database:", error);
+    }
+
+    if (RESET_DATABASE === "true") {
+        await sequelize.sync();
+        // await sequelize.sync({ alter: true });
+        // await sequelize.sync({ force: true });
+        console.log("All models were synchronized successfully.");
+    }
+})();
+
+
+export {
+    AccountModel,
+    CategoryModel,
+    ProductModel,
+    KeypairModel,
+    BalanceModel,
+    TransactionModel,
+    InvoiceModel,
+    InvoiceDetailModel,
+    QuantityModel,
+    SendMailModel,
+}

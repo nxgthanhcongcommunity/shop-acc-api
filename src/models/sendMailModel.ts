@@ -1,34 +1,69 @@
-import { sequelize } from "../db";
-import { DataTypes } from "sequelize";
+import { Optional, } from 'sequelize';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 
-const SendMail = sequelize.define(
-  "SendMail",
-  {
-    from: {
-      type: DataTypes.STRING,
-    },
-    to: {
-      type: DataTypes.STRING,
-    },
-    subject: {
-      type: DataTypes.STRING,
-    },
-    text: {
-      type: DataTypes.TEXT,
-    },
-    attempTimes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
-    succeed: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    }
-  },
-  {
-    tableName: "SendMails",
-    paranoid: true,
-  }
-);
+interface ISendMailAttributes {
+  id: number;
+  from: string;
+  to: string;
+  subject: string;
+  text: string;
+  attempTimes: number;
+  succeed: boolean;
+}
+
+interface ISendMailCreationAttributes extends Optional<ISendMailAttributes, 'id'> { }
+
+@Table({
+  timestamps: true,
+  paranoid: true,
+  tableName: "SendMails",
+})
+class SendMail extends Model<ISendMailAttributes, ISendMailCreationAttributes> {
+
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  from!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  to!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  subject!: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  text!: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  attempTimes!: number;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  succeed!: boolean;
+
+}
 
 export default SendMail;

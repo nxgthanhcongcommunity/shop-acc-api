@@ -1,6 +1,7 @@
 import { QueryTypes } from "sequelize";
 import { RequestHandler } from "../utils";
 import { sequelize } from "../db";
+import { QuantityModel } from "../models";
 const requestHandler = new RequestHandler();
 
 class QuantityController {
@@ -9,6 +10,9 @@ class QuantityController {
     try {
 
       const { page, limit, name = "" } = req.query;
+
+      const recordsTest = await QuantityModel.findAll();
+      console.log(recordsTest);
 
       const records = await sequelize.query(
         `
