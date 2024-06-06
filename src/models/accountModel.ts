@@ -1,6 +1,17 @@
-import { Optional, } from 'sequelize';
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table, HasMany, HasOne } from 'sequelize-typescript';
-import Balance from './balanceModel';
+import { Optional } from "sequelize";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+  HasMany,
+  HasOne,
+} from "sequelize-typescript";
+import Balance from "./balanceModel";
+import Transaction from "./transactionModel";
+import Invoice from "./invoiceModel";
 
 interface IAccountAttributes {
   id: number;
@@ -16,7 +27,8 @@ interface IAccountAttributes {
   role: string;
 }
 
-interface IAccountCreationAttributes extends Optional<IAccountAttributes, 'id'> { }
+interface IAccountCreationAttributes
+  extends Optional<IAccountAttributes, "id"> {}
 
 @Table({
   timestamps: true,
@@ -24,7 +36,6 @@ interface IAccountCreationAttributes extends Optional<IAccountAttributes, 'id'> 
   tableName: "Accounts",
 })
 class Account extends Model<IAccountAttributes, IAccountCreationAttributes> {
-
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -89,8 +100,14 @@ class Account extends Model<IAccountAttributes, IAccountCreationAttributes> {
   })
   role!: string;
 
-  @HasOne(() => Balance, 'accountId')
+  @HasOne(() => Balance, "accountId")
   balance: Balance;
+
+  @HasMany(() => Transaction, "accountId")
+  transactions: Transaction[];
+
+  @HasMany(() => Invoice, "accountId")
+  invoices: Invoice[];
 }
 
 export default Account;

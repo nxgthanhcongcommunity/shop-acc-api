@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ROLE } from "../constants";
-import { AccountModel } from "../models";
+import { AccountModel, BalanceModel } from "../models";
 import utils, { RequestHandler } from "../utils";
 import { generateToken } from "../utils/jwtUtils";
 import "../utils/passport";
@@ -49,7 +49,10 @@ class AuthController {
           providerName: user.provider,
           role: ROLE.MEMBER,
         });
-        await newAccount.save();
+        await BalanceModel.create({
+          accountId: newAccount.id,
+          amount: 0,
+        });
         createdAccount = newAccount;
       }
 

@@ -1,29 +1,80 @@
-import { sequelize } from "../db";
-import { DataTypes } from "sequelize";
+import { Optional } from "sequelize";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from "sequelize-typescript";
+import Invoice from "./invoiceModel";
+import Product from "./productModel";
 
-const InvoiceDetail = sequelize.define(
-    'InvoiceDetail',
-    {
-        invoiceId: {
-            type: DataTypes.INTEGER,
-        },
-        productId: {
-            type: DataTypes.INTEGER,
-        },
-        quantity: {
-            type: DataTypes.INTEGER,
-        },
-        unitPrice: {
-            type: DataTypes.DECIMAL,
-        },
-        totalPrice: {
-            type: DataTypes.DECIMAL,
-        },
-    },
-    {
-        tableName: 'InvoiceDetails',
-        paranoid: true,
-    },
-);
+interface IInvoiceDetailAttributes {
+  id: number;
+  invoiceId: number;
+  productId: number;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
 
-export default InvoiceDetail
+interface IInvoiceDetailCreationAttributes
+  extends Optional<IInvoiceDetailAttributes, "id"> {}
+
+@Table({
+  timestamps: true,
+  paranoid: true,
+  tableName: "InvoiceDetails",
+})
+class InvoiceDetail extends Model<
+  IInvoiceDetailAttributes,
+  IInvoiceDetailCreationAttributes
+> {
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id!: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  quantity!: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  unitPrice!: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  totalPrice!: number;
+
+  @ForeignKey(() => Invoice)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  invoiceId!: number;
+
+  @ForeignKey(() => Product)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  productId!: number;
+
+  @BelongsTo(() => Invoice, "invoiceId")
+  invoice: Invoice;
+
+  @BelongsTo(() => Product, "productId")
+  product: Product;
+}
+
+export default InvoiceDetail;

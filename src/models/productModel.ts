@@ -1,8 +1,18 @@
-import { Table, Column, Model, DataType, HasOne, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasOne,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
+} from "sequelize-typescript";
 import { sequelize } from "../db";
 import { Optional } from "sequelize";
-import Category from './categoryModel';
-import Quantity from './quantityModel';
+import Category from "./categoryModel";
+import Quantity from "./quantityModel";
+import InvoiceDetail from "./invoiceDetailModel";
 
 interface IProductAttributes {
   id: number;
@@ -21,7 +31,8 @@ interface IProductAttributes {
   categoryId: number;
 }
 
-interface IProductCreationAttributes extends Optional<IProductAttributes, 'id'> { }
+interface IProductCreationAttributes
+  extends Optional<IProductAttributes, "id"> {}
 
 @Table({
   timestamps: true,
@@ -29,7 +40,6 @@ interface IProductCreationAttributes extends Optional<IProductAttributes, 'id'> 
   tableName: "Products",
 })
 class Product extends Model<IProductAttributes, IProductCreationAttributes> {
-
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -114,11 +124,14 @@ class Product extends Model<IProductAttributes, IProductCreationAttributes> {
   })
   categoryId!: number;
 
-  @BelongsTo(() => Category, 'categoryId')
+  @BelongsTo(() => Category, "categoryId")
   category: Category;
 
-  @HasOne(() => Quantity, 'productId')
+  @HasOne(() => Quantity, "productId")
   quantity: Quantity;
+
+  @HasMany(() => InvoiceDetail, "productId")
+  invoiceDetails: InvoiceDetail[];
 }
 
 export default Product;

@@ -7,42 +7,33 @@ const requestHandler = new RequestHandler();
 class TransactionController {
   async SEPaymentHook(req, res) {
     try {
+      const reqObj = req.body;
+      const accountId = reqObj.content.split(" ").slice(-1)[0];
 
       const transactionObj = await TransactionModel.create({
-        gateway: req.body.gateway,
-        transactionDate: req.body.transactionDate,
-        accountNumber: req.body.accountNumber,
-        code: req.body.code,
-        content: req.body.content,
-        transferType: req.body.transferType,
-        transferAmount: req.body.transferAmount,
-        accumulated: req.body.accumulated,
-        subAccount: req.body.subAccount,
-        referenceCode: req.body.referenceCode,
-        description: req.body.description,
-        transactionIdAtProvider: req.body.id,
-        raw: JSON.stringify(req.body),
+        gateway: reqObj.gateway,
+        transactionDate: reqObj.transactionDate,
+        accountNumber: reqObj.accountNumber,
+        code: "" + reqObj.code,
+        content: reqObj.content,
+        transferType: reqObj.transferType,
+        transferAmount: reqObj.transferAmount,
+        accumulated: reqObj.accumulated,
+        subAccount: reqObj.subAccount,
+        referenceCode: reqObj.referenceCode,
+        description: reqObj.description,
+        transactionIdAtProvider: reqObj.id,
+        raw: JSON.stringify(reqObj),
+        accountId: accountId,
+        succeed: true,
       });
 
-      const result = await transactionObj.save();
-
-      const balance = await BalanceModel.findOne({ where: { accountId: 1 } });
-
-      if (balance) {
-        await BalanceModel.increment(
-          'amount',
-          {
-            by: 2000000000,
-            where: {
-              accountId: 1,
-            },
-          },
-        );
-      } else {
-        await BalanceModel.create(
-          { accountId: 1, amount: 1000000000 },
-        );
-      }
+      await BalanceModel.increment("amount", {
+        by: reqObj.transferAmount,
+        where: {
+          accountId: accountId,
+        },
+      });
 
       // requestHandler.sendSucceed(res, );
       res.send({ success: true });
@@ -54,7 +45,6 @@ class TransactionController {
 
   async Get(req, res) {
     try {
-
       const { page, limit, name = "" } = req.query;
 
       const records = await sequelize.query(
@@ -86,12 +76,10 @@ class TransactionController {
       );
 
       requestHandler.sendSucceed(res, { total: 0, data: records });
-
     } catch (err) {
       console.log(err);
       requestHandler.sendError(res);
     }
-
   }
 }
 

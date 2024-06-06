@@ -1,29 +1,77 @@
-import { sequelize } from "../db";
-import { DataTypes } from "sequelize";
+import { Optional } from "sequelize";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from "sequelize-typescript";
+import Account from "./accountModel";
+import InvoiceDetail from "./invoiceDetailModel";
 
-const Invoice = sequelize.define(
-    'Invoice',
-    {
-        accountId: {
-            type: DataTypes.INTEGER,
-        },
-        totalAmount: {
-            type: DataTypes.DECIMAL,
-        },
-        discount: {
-            type: DataTypes.DECIMAL,
-        },
-        paymentStatus: {
-            type: DataTypes.STRING,
-        },
-        paymentMethod: {
-            type: DataTypes.STRING,
-        },
-    },
-    {
-        tableName: 'Invoices',
-        paranoid: true,
-    },
-);
+interface IInvoiceAttributes {
+  id: number;
+  accountId: number;
+  totalAmount: number;
+  discount: number;
+  paymentStatus: string;
+  paymentMethod: string;
+}
 
-export default Invoice
+interface IInvoiceCreationAttributes
+  extends Optional<IInvoiceAttributes, "id"> {}
+
+@Table({
+  timestamps: true,
+  paranoid: true,
+  tableName: "Invoices",
+})
+class Invoice extends Model<IInvoiceAttributes, IInvoiceCreationAttributes> {
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id!: number;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: false,
+  })
+  totalAmount!: string;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: false,
+  })
+  discount!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  paymentStatus!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  paymentMethod!: string;
+
+  @ForeignKey(() => Account)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  accountId!: number;
+
+  @BelongsTo(() => Account, "accountId")
+  account: Account;
+
+  @HasMany(() => InvoiceDetail, "invoiceId")
+  invoiceDetails: InvoiceDetail[];
+}
+
+export default Invoice;
