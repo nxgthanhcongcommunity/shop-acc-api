@@ -15,50 +15,50 @@ import "dotenv/config";
 const { RESET_DATABASE } = process.env;
 
 export const sequelize = new Sequelize("shop-acc", "postgres", "qqq111!!!", {
-  host: "localhost",
-  // host: "10.253.2.18",
-  port: 5432,
-  dialect: "postgres",
-  logging: false,
+    host: "localhost",
+    // host: "10.253.2.18",
+    port: 5432,
+    dialect: "postgres",
+    logging: false,
 });
 
 sequelize.addModels([
-  ProductModel,
-  QuantityModel,
-  CategoryModel,
-  AccountModel,
-  BalanceModel,
-  SendMailModel,
-  TransactionModel,
-  KeypairModel,
-  InvoiceModel,
-  InvoiceDetailModel,
+    ProductModel,
+    QuantityModel,
+    CategoryModel,
+    AccountModel,
+    BalanceModel,
+    SendMailModel,
+    TransactionModel,
+    KeypairModel,
+    InvoiceModel,
+    InvoiceDetailModel,
 ]);
 
 (async () => {
-  try {
-    await sequelize.authenticate();
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
+    try {
+        await sequelize.authenticate();
+    } catch (error) {
+        console.error("Unable to connect to the database:", error);
+    }
 
-  if (RESET_DATABASE === "true") {
-    // await sequelize.sync();
-    await sequelize.sync({ alter: true });
-    // await sequelize.sync({ force: true });
-    console.log("All models were synchronized successfully.");
-  }
+    if (RESET_DATABASE === "true") {
+        // await sequelize.sync();
+        await sequelize.sync({ alter: true });
+        // await sequelize.sync({ force: true });
+        console.log("All models were synchronized successfully.");
+    }
 })();
 
 export {
-  AccountModel,
-  CategoryModel,
-  ProductModel,
-  KeypairModel,
-  BalanceModel,
-  TransactionModel,
-  InvoiceModel,
-  InvoiceDetailModel,
-  QuantityModel,
-  SendMailModel,
+    AccountModel,
+    CategoryModel,
+    ProductModel,
+    KeypairModel,
+    BalanceModel,
+    TransactionModel,
+    InvoiceModel,
+    InvoiceDetailModel,
+    QuantityModel,
+    SendMailModel,
 };

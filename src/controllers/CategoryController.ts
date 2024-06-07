@@ -1,5 +1,5 @@
 import { Op, QueryTypes, Sequelize, where } from "sequelize";
-import { CategoryModel, ProductModel } from "../models";
+import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
 const requestHandler = new RequestHandler();
 
@@ -120,34 +120,13 @@ class CategoryController {
         where: {
           bannerCode: bannerCode,
         },
-        include: [ProductModel],
+        include: [
+          {
+            model: ProductModel,
+            include: [QuantityModel],
+          }
+        ],
       });
-
-      /*
-      const records = await sequelize.query(
-        `
-        select 
-          c.id, 
-          c.code, 
-          c.name, 
-          c."mainFileUrl", 
-          count(p.code) as "totalProduct"
-        from 
-          public."Categories" c 
-          left join public."Products" p on c.code = p."categoryCode"
-        where
-          c."deletedAt" is null 
-          and p."deletedAt" is null
-          and c."bannerCode" = :pBannerCode
-        group by 
-          c.id, c.code, c.name, c."mainFileUrl"
-      `,
-        {
-          replacements: { pBannerCode: bannerCode },
-          type: QueryTypes.SELECT,
-        }
-      );
-      */
 
       requestHandler.sendSucceed(res, records);
     } catch (err) {
@@ -155,6 +134,30 @@ class CategoryController {
       requestHandler.sendError(res);
     }
   }
+
+  async GetCategoryByCode(req, res) {
+    try {
+      const { code } = req.query;
+
+      const record = await CategoryModel.findOne({
+        where: {
+          code,
+        },
+        include: [
+          {
+            model: ProductModel,
+            include: [QuantityModel],
+          }
+        ],
+      });
+
+      requestHandler.sendSucceed(res, record);
+    } catch (err) {
+      console.log(err);
+      requestHandler.sendError(res);
+    }
+  }
+
 }
 
 export default new CategoryController();

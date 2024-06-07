@@ -171,6 +171,7 @@ class ProductController {
       const relatedProducts = await ProductModel.findAll({
         offset: 0,
         limit: 4,
+        include: [QuantityModel]
       });
 
       requestHandler.sendSucceed(res, { product, relatedProducts });

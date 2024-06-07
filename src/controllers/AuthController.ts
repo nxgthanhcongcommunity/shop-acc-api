@@ -106,6 +106,7 @@ class AuthController {
       createdAccount = accountInDatabase;
 
       if (!accountInDatabase) {
+
         const newAccount = await AccountModel.create({
           code: `USR-${utils.generateUniqueString(6)}`,
           idAtProvider: userInfo.id,
@@ -118,7 +119,10 @@ class AuthController {
           role: ROLE.MEMBER,
           passwordHash: "",
         });
-        await newAccount.save();
+        await BalanceModel.create({
+          accountId: newAccount.id,
+          amount: 0,
+        });
         createdAccount = newAccount;
       }
 

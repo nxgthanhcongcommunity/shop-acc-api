@@ -16,4 +16,6 @@ router.get(
   CategoryController.GetCategoriesByBannerCode
 );
 
+router.get("/get-category-by-code", CategoryController.GetCategoryByCode);
+
 export default router;
