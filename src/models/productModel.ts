@@ -1,18 +1,17 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  HasOne,
-  ForeignKey,
-  BelongsTo,
-  HasMany,
-} from "sequelize-typescript";
-import { sequelize } from "../db";
 import { Optional } from "sequelize";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  HasOne,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import Category from "./categoryModel";
-import Quantity from "./quantityModel";
 import InvoiceDetail from "./invoiceDetailModel";
+import Quantity from "./quantityModel";
 
 interface IProductAttributes {
   id: number;

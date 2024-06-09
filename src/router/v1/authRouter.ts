@@ -32,8 +32,5 @@ router.get(
 );
 
 router.post("/google", AuthController.HandleGoggleLoginAsync);
-router.get("/test", (req, res) => {
-  res.send("ok");
-});
 
 export default router;

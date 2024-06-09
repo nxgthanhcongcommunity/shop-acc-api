@@ -40,13 +40,13 @@ class Invoice extends Model<IInvoiceAttributes, IInvoiceCreationAttributes> {
     type: DataType.DECIMAL,
     allowNull: false,
   })
-  totalAmount!: string;
+  totalAmount!: number;
 
   @Column({
     type: DataType.DECIMAL,
     allowNull: false,
   })
-  discount!: string;
+  discount!: number;
 
   @Column({
     type: DataType.STRING,

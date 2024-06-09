@@ -1,7 +1,6 @@
 import { QueryTypes } from "sequelize";
 import { BalanceModel, TransactionModel } from "../models";
 import { RequestHandler } from "../utils";
-import { sequelize } from "../db";
 const requestHandler = new RequestHandler();
 
 class TransactionController {
@@ -47,35 +46,35 @@ class TransactionController {
     try {
       const { page, limit, name = "" } = req.query;
 
-      const records = await sequelize.query(
-        `
-        SELECT 
-          id, 
-          "transactionIdAtProvider", 
-          gateway, 
-          "transactionDate", 
-          "accountNumber", 
-          code, 
-          content, 
-          "transferType", 
-          "transferAmount", 
-          accumulated, 
-          "subAccount", 
-          "referenceCode", 
-          description, 
-          "createdAt",
-          "updatedAt", 
-          "raw"
-        FROM 
-          public."Transactions"
-        -- limit :pLimit offet :pOffset
-      `,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+      // const records = await sequelize.query(
+      //   `
+      //   SELECT
+      //     id,
+      //     "transactionIdAtProvider",
+      //     gateway,
+      //     "transactionDate",
+      //     "accountNumber",
+      //     code,
+      //     content,
+      //     "transferType",
+      //     "transferAmount",
+      //     accumulated,
+      //     "subAccount",
+      //     "referenceCode",
+      //     description,
+      //     "createdAt",
+      //     "updatedAt",
+      //     "raw"
+      //   FROM
+      //     public."Transactions"
+      //   -- limit :pLimit offet :pOffset
+      // `,
+      //   {
+      //     type: QueryTypes.SELECT,
+      //   }
+      // );
 
-      requestHandler.sendSucceed(res, { total: 0, data: records });
+      requestHandler.sendSucceed(res, { total: 0, data: [] });
     } catch (err) {
       console.log(err);
       requestHandler.sendError(res);
