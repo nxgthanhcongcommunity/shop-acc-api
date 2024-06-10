@@ -1,7 +1,5 @@
 import utils, { RequestHandler } from "../utils";
 
-const requestHandler = new RequestHandler();
-
 class MasterDataController {
   async GetByKey(req, res) {
     try {
@@ -54,9 +52,9 @@ class MasterDataController {
         ],
       };
 
-      requestHandler.sendSucceed(res, data);
+      RequestHandler.sendSucceed(res, data);
     } catch (ex) {
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 }

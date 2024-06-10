@@ -1,7 +1,6 @@
 import { Op, } from "sequelize";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
-const requestHandler = new RequestHandler();
 
 class ProductController {
   async GetProducts(req, res) {
@@ -23,10 +22,10 @@ class ProductController {
 
       const total = await ProductModel.count();
 
-      requestHandler.sendSucceed(res, { total, data });
+      RequestHandler.sendSucceed(res, { total, data });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -45,10 +44,10 @@ class ProductController {
         currentQuantity: quantity.currentQuantity,
       });
 
-      requestHandler.sendSucceed(res);
+      RequestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -86,10 +85,10 @@ class ProductController {
           },
         }
       )
-      requestHandler.sendSucceed(res);
+      RequestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -98,7 +97,7 @@ class ProductController {
       const product = req.body;
 
       if (product == null) {
-        requestHandler.sendClientError(res, "invalid input");
+        RequestHandler.sendClientError(res, "invalid input");
         return;
       }
 
@@ -116,10 +115,10 @@ class ProductController {
         }
       )
 
-      requestHandler.sendSucceed(res);
+      RequestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -150,10 +149,10 @@ class ProductController {
 
       const total = await ProductModel.count();
 
-      requestHandler.sendSucceed(res, { total, data });
+      RequestHandler.sendSucceed(res, { total, data });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -174,10 +173,10 @@ class ProductController {
         include: [QuantityModel]
       });
 
-      requestHandler.sendSucceed(res, { product, relatedProducts });
+      RequestHandler.sendSucceed(res, { product, relatedProducts });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 }

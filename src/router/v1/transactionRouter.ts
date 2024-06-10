@@ -4,5 +4,8 @@ const router = express.Router();
 
 router.post("/hooks/se-payment", TransactionController.SEPaymentHook);
 router.get("/get", TransactionController.Get);
+router.post("/create-payment-url", TransactionController.CreatePaymentUrl);
+
+//CreatePaymentUrl
 
 export default router;

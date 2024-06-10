@@ -1,7 +1,6 @@
+import { InvoiceDetailModel, InvoiceModel, ProductModel } from "../models";
 import { InvoiceBusiness } from "../business";
 import { RequestHandler } from "../utils";
-
-const requestHandler = new RequestHandler();
 
 class InvoiceController {
   async Create(req, res) {
@@ -11,10 +10,10 @@ class InvoiceController {
 
       const rs = await invoiceBusiness.Create({ invoice, invoiceDetails });
 
-      requestHandler.sendSucceed(res, rs);
+      RequestHandler.sendSucceed(res, rs);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -42,10 +41,10 @@ class InvoiceController {
       //   }
       // );
 
-      requestHandler.sendSucceed(res, { total: 0, data: [] });
+      RequestHandler.sendSucceed(res, { total: 0, data: [] });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -75,11 +74,27 @@ class InvoiceController {
       //   }
       // );
 
-      requestHandler.sendSucceed(res, { total: 0, data: [] });
+      RequestHandler.sendSucceed(res, { total: 0, data: [] });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
+  }
+
+  async GetInvoiceByCode(req, res) {
+
+    const { code } = req.query;
+
+    const record = await InvoiceModel.findOne({
+      where: {
+        code
+      },
+      include: [{
+        model: InvoiceDetailModel,
+        include: [ProductModel],
+      }]
+    })
+    RequestHandler.sendSucceed(res, record);
   }
 }
 

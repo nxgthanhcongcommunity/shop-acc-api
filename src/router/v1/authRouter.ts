@@ -1,7 +1,8 @@
-import passport from "passport";
-import { AuthController } from "../../controllers";
 import * as express from "express";
+import { AuthController } from "../../controllers";
 const router = express.Router();
+
+/*
 
 router.get(
   "/google",
@@ -30,6 +31,11 @@ router.get(
   }),
   AuthController.FacebookCallback
 );
+
+
+*/
+
+
 
 router.post("/google", AuthController.HandleGoggleLoginAsync);
 

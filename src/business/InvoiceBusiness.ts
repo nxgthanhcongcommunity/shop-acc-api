@@ -6,6 +6,7 @@ import {
   QuantityModel,
   SendMailModel,
 } from "../models";
+import utils from "../utils";
 
 interface ICreateRequest {
   invoice: any;
@@ -17,8 +18,9 @@ class InvoiceBusiness {
     try {
       const { invoice, invoiceDetails } = reqObj;
 
-      let invoiceObj = await InvoiceModel.create({
+      const invoiceObj = await InvoiceModel.create({
         ...invoice,
+        code: `INV-${utils.generateUniqueString(6)}`,
         discount: 0,
         paymentStatus: "SUCCEED",
         paymentMethod: "DIAMOND",
@@ -63,12 +65,12 @@ class InvoiceBusiness {
         succeed: false,
       });
 
-      const result = await transporter.sendMail({
-        ...mailOptions,
-        to: "nxgthanhcongcommunity@gmail.com",
-      });
+      // const result = await transporter.sendMail({
+      //   ...mailOptions,
+      //   to: "nxgthanhcongcommunity@gmail.com",
+      // });
 
-      return true;
+      return invoiceObj;
     } catch (err) {
       console.log(err);
       return false;

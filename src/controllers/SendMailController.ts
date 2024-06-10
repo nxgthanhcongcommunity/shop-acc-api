@@ -1,5 +1,4 @@
 import { RequestHandler } from "../utils";
-const requestHandler = new RequestHandler();
 
 class SendMailController {
   async Get(req, res) {
@@ -26,10 +25,10 @@ class SendMailController {
       //   }
       // );
 
-      requestHandler.sendSucceed(res, { total: 0, data: [] });
+      RequestHandler.sendSucceed(res, { total: 0, data: [] });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 }

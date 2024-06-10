@@ -1,7 +1,6 @@
 import { Op, QueryTypes, Sequelize, where } from "sequelize";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
-const requestHandler = new RequestHandler();
 
 class CategoryController {
   async GetCategories(req, res) {
@@ -22,10 +21,10 @@ class CategoryController {
 
       const total = await CategoryModel.count();
 
-      requestHandler.sendSucceed(res, { total, data });
+      RequestHandler.sendSucceed(res, { total, data });
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
   async AddCategory(req, res) {
@@ -37,7 +36,7 @@ class CategoryController {
         ("" + category.name).length === 0 ||
         ("" + category.bannerCode).length === 0
       ) {
-        requestHandler.sendClientError(res, "invalid input");
+        RequestHandler.sendClientError(res, "invalid input");
         return;
       }
 
@@ -46,10 +45,10 @@ class CategoryController {
       const categoryObj = await CategoryModel.create(category);
       await categoryObj.save();
 
-      requestHandler.sendSucceed(res);
+      RequestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -63,7 +62,7 @@ class CategoryController {
         ("" + category.code).length === 0 ||
         ("" + category.bannerCode).length === 0
       ) {
-        requestHandler.sendClientError(res, "invalid input");
+        RequestHandler.sendClientError(res, "invalid input");
         return;
       }
 
@@ -73,10 +72,10 @@ class CategoryController {
         },
       });
 
-      requestHandler.sendSucceed(res);
+      RequestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -89,7 +88,7 @@ class CategoryController {
         ("" + category.name).length === 0 ||
         ("" + category.code).length === 0
       ) {
-        requestHandler.sendClientError(res, "invalid input");
+        RequestHandler.sendClientError(res, "invalid input");
         return;
       }
 
@@ -105,10 +104,10 @@ class CategoryController {
         },
       });
 
-      requestHandler.sendSucceed(res);
+      RequestHandler.sendSucceed(res);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -128,10 +127,10 @@ class CategoryController {
         ],
       });
 
-      requestHandler.sendSucceed(res, records);
+      RequestHandler.sendSucceed(res, records);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 
@@ -151,10 +150,10 @@ class CategoryController {
         ],
       });
 
-      requestHandler.sendSucceed(res, record);
+      RequestHandler.sendSucceed(res, record);
     } catch (err) {
       console.log(err);
-      requestHandler.sendError(res);
+      RequestHandler.sendError(res);
     }
   }
 

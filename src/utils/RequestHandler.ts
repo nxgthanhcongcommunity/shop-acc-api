@@ -1,7 +1,7 @@
-import { IResponse } from "types";
+import { IResponse } from "../interfaces";
 
 class RequestHandler {
-  constructor() {}
+  constructor() { }
 
   sendSucceed(res, data = null, message = null) {
     res.status(200).json({
@@ -35,13 +35,10 @@ class RequestHandler {
     } as IResponse<null>);
   }
 
-  send(res, status, succeed, message, data) {
-    res.status(status).json({
-      succeed: succeed,
-      message: message,
-      data: data,
-    } as IResponse<any>);
+  send(res, response) {
+    res.json(response as IResponse<any>);
   }
+
 }
 
-export default RequestHandler;
+export default new RequestHandler();

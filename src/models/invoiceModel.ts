@@ -13,6 +13,7 @@ import InvoiceDetail from "./invoiceDetailModel";
 
 interface IInvoiceAttributes {
   id: number;
+  code: string;
   accountId: number;
   totalAmount: number;
   discount: number;
@@ -21,7 +22,7 @@ interface IInvoiceAttributes {
 }
 
 interface IInvoiceCreationAttributes
-  extends Optional<IInvoiceAttributes, "id"> {}
+  extends Optional<IInvoiceAttributes, "id"> { }
 
 @Table({
   timestamps: true,
@@ -35,6 +36,12 @@ class Invoice extends Model<IInvoiceAttributes, IInvoiceCreationAttributes> {
     primaryKey: true,
   })
   id!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  code!: string;
 
   @Column({
     type: DataType.DECIMAL,
