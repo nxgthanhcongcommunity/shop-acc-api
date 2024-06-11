@@ -8,6 +8,8 @@ import InvoiceModel from "./invoiceModel";
 import InvoiceDetailModel from "./invoiceDetailModel";
 import QuantityModel from "./quantityModel";
 import SendMailModel from "./sendMailModel";
+import VnpayTransactionModel from "./vnpayTransactionModel";
+
 
 import { Sequelize } from "sequelize-typescript";
 import "dotenv/config";
@@ -33,6 +35,7 @@ sequelize.addModels([
     KeypairModel,
     InvoiceModel,
     InvoiceDetailModel,
+    VnpayTransactionModel,
 ]);
 
 (async () => {
@@ -57,6 +60,7 @@ export {
     KeypairModel,
     BalanceModel,
     TransactionModel,
+    VnpayTransactionModel,
     InvoiceModel,
     InvoiceDetailModel,
     QuantityModel,

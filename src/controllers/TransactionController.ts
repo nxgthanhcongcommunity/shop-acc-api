@@ -1,9 +1,10 @@
-import { TransactionBusiness } from "../business";
 import { BalanceModel, TransactionModel } from "../models";
 import { RequestHandler } from "../utils";
 import BaseController from "./BaseController";
 
 class TransactionController extends BaseController {
+  /*
+  
   async SEPaymentHook(req, res) {
     try {
       const reqObj = req.body;
@@ -41,6 +42,8 @@ class TransactionController extends BaseController {
       RequestHandler.sendError(res);
     }
   }
+  
+  */
 
   async Get(req, res) {
     try {
@@ -81,19 +84,6 @@ class TransactionController extends BaseController {
     }
   }
 
-  _transactionBusiness = new TransactionBusiness();
-  CreatePaymentUrl = async (req, res) => {
-    const ipAddr =
-      req.headers["x-forwarded-for"] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      req.connection.socket.remoteAddress;
-    const { amount } = req.body;
-
-    this.ProcessAsync(res, () =>
-      this._transactionBusiness.CreatePaymentUrl({ amount, ipAddr })
-    );
-  };
 }
 
 export default new TransactionController();

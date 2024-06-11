@@ -1,7 +1,5 @@
 {
     "vnpConfig": {
-        "vnp_TmnCode": "HXPQO8EJ",
-        "vnp_HashSecret": "T39AXT9U9ELWLGB0QNCSSCSYKKN4Q94W",
         "vnp_Url": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
         "vnp_Api": "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction",
         "vnp_ReturnUrl": "http://localhost:3000/account-management/received"

@@ -1,9 +1,9 @@
-import { ICreatePaymentUrl } from "interfaces";
+import { ICreatePaymentUrlReq } from "../interfaces";
 import BaseBusiness from "./BaseBusiness";
 import moment from "moment";
 
 class TransactionBusiness {
-  CreatePaymentUrl = async (reqObj: ICreatePaymentUrl) => {
+  CreatePaymentUrl = async (reqObj: ICreatePaymentUrlReq) => {
     try {
       const { amount, ipAddr } = reqObj;
 
@@ -53,7 +53,7 @@ class TransactionBusiness {
         paymentUrl: vnpUrl,
       });
     } catch (err) {
-      return BaseBusiness.Error;
+      return BaseBusiness.Error();
     }
   };
 

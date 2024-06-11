@@ -11,25 +11,20 @@ import Account from "./accountModel";
 
 interface ITransactionAttributes {
   id: number;
-  transactionIdAtProvider: number;
-  gateway: string;
-  transactionDate: string;
-  accountNumber: string;
-  code: string;
-  content: string;
-  transferType: string;
-  transferAmount: number;
-  accumulated: number;
-  subAccount: string;
-  referenceCode: string;
-  description: string;
-  raw: string;
+  provider: "VNPAY";
+  transactionNo: string;
+  refNo: string;
+  amount: number;
+  orderInfo: string;
+  payDate: string;
   succeed: boolean;
+  message: string;
+  raw: string;
   accountId: number;
 }
 
 interface ITransactionCreationAttributes
-  extends Optional<ITransactionAttributes, "id"> {}
+  extends Optional<ITransactionAttributes, "id"> { }
 
 @Table({
   timestamps: true,
@@ -48,87 +43,58 @@ class Transaction extends Model<
   id!: number;
 
   @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  transactionIdAtProvider!: number;
-
-  @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  gateway!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  transactionDate!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  accountNumber!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  code!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  content!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  transferType!: string;
+  provider!: string;
 
   @Column({
     type: DataType.DECIMAL,
     allowNull: false,
   })
-  transferAmount!: number;
-
-  @Column({
-    type: DataType.DECIMAL,
-    allowNull: false,
-  })
-  accumulated!: number;
-
-  @Column({
-    type: DataType.STRING,
-  })
-  subAccount: string;
+  amount!: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  referenceCode!: string;
+  orderInfo!: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  description!: string;
-
-  @Column({
-    type: DataType.TEXT,
-    allowNull: false,
-  })
-  raw!: string;
+  payDate!: string;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
   })
   succeed!: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  message!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  transactionNo!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  refNo!: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  raw!: string;
 
   @ForeignKey(() => Account)
   @Column({

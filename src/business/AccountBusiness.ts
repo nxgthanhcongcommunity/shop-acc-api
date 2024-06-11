@@ -33,7 +33,7 @@ class AccountBusiness {
       })
 
     } catch (err) {
-      return BaseBusiness.Error;
+      return BaseBusiness.Error();
     }
   }
 
@@ -51,7 +51,7 @@ class AccountBusiness {
 
       return BaseBusiness.Success(record);
     } catch (err) {
-      return BaseBusiness.Error;
+      return BaseBusiness.Error();
     }
   }
 

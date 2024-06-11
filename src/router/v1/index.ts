@@ -7,6 +7,7 @@ import masterDataRouter from "./masterDataRouter";
 import productRouter from "./productRouter";
 import sendMailRouter from "./sendMailRouter";
 import transactionRouter from "./transactionRouter";
+import vnpayTransactionRouter from "./vnpayTransactionRouter";
 const appRouter = express.Router();
 
 appRouter.use("/master-data", masterDataRouter); //verifyTokenMiddleware([ROLE.ADMIN])
@@ -15,6 +16,7 @@ appRouter.use("/category", categoryRouter);
 appRouter.use("/product", productRouter);
 appRouter.use("/account", accountRouter);
 appRouter.use("/transaction", transactionRouter);
+appRouter.use("/vnpay-transaction", vnpayTransactionRouter);
 appRouter.use("/invoice", invoiceRouter);
 appRouter.use("/sendmail", sendMailRouter);
 

@@ -138,7 +138,7 @@ class AuthBusiness {
                 refreshToken: "",
             })
         } catch (err) {
-            return BaseBusiness.Error;
+            return BaseBusiness.Error();
         }
     }
 }
