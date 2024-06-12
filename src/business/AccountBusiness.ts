@@ -6,7 +6,8 @@ import {
 } from "../interfaces";
 import {
   AccountModel,
-  BalanceModel
+  BalanceModel,
+  NotificationModel
 } from "../models";
 import BaseBusiness from "./BaseBusiness";
 
@@ -54,6 +55,58 @@ class AccountBusiness {
       return BaseBusiness.Error();
     }
   }
+
+  GetNotifications = async (req) => {
+
+    try {
+      const { accountCode } = req.query;
+
+      const record = await AccountModel.findOne({
+        where: {
+          code: accountCode,
+        },
+        include: [{
+          model: NotificationModel,
+          order: [["updatedAt", "DESC"]],
+        }],
+      });
+
+      return BaseBusiness.Success(record);
+    } catch (err) {
+      return BaseBusiness.Error();
+    }
+  }
+
+  MarkNotificationsRead = async (req) => {
+
+    try {
+      const { code, accountCode } = req.query;
+
+      // if (code == null || code.length == 0) {
+      //   const record = await AccountModel.update({
+
+      //   },{
+      //     where: {
+      //       code,
+      //       accountCode,
+      //     },
+      //   });
+      // }
+
+      const record = await NotificationModel.update({
+        isViewed: true,
+      }, {
+        where: {
+          code,
+        },
+      });
+
+      return BaseBusiness.Success(true);
+    } catch (err) {
+      return BaseBusiness.Error();
+    }
+  }
+
 
 
 }

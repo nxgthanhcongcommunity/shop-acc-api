@@ -7,3 +7,4 @@ export { default as TransactionController } from "./TransactionController";
 export { default as VnpayTransactionController } from "./VnpayTransactionController";
 export { default as InvoiceController } from "./InvoiceController";
 export { default as SendMailController } from "./SendMailController";
+export { default as TestController } from "./TestController";

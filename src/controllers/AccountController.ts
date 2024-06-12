@@ -8,8 +8,14 @@ class AccountController extends BaseController {
   GetAccounts = async (req, res) =>
     this.ProcessAsync(res, () => this._accountBusiness.GetAccounts(req.query));
 
+  GetNotifications = async (req, res) =>
+    this.ProcessAsync(res, () => this._accountBusiness.GetNotifications(req));
+
   GetAccountBalanceByCode = async (req, res) =>
     this.ProcessAsync(res, () => this._accountBusiness.GetAccountBalanceByCode(req.query));
+
+  MarkNotificationsRead = async (req, res) =>
+    this.ProcessAsync(res, () => this._accountBusiness.MarkNotificationsRead(req));
 
 }
 

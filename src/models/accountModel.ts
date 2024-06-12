@@ -12,6 +12,7 @@ import {
 import Balance from "./balanceModel";
 import Transaction from "./transactionModel";
 import Invoice from "./invoiceModel";
+import Notification from "./notificationModel";
 
 interface IAccountAttributes {
   id: number;
@@ -28,7 +29,7 @@ interface IAccountAttributes {
 }
 
 interface IAccountCreationAttributes
-  extends Optional<IAccountAttributes, "id"> {}
+  extends Optional<IAccountAttributes, "id"> { }
 
 @Table({
   timestamps: true,
@@ -108,6 +109,9 @@ class Account extends Model<IAccountAttributes, IAccountCreationAttributes> {
 
   @HasMany(() => Invoice, "accountId")
   invoices: Invoice[];
+
+  @HasMany(() => Notification, "accountId")
+  notifications: Notification[];
 }
 
 export default Account;

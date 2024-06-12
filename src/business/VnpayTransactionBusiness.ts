@@ -1,17 +1,19 @@
 import moment from "moment";
 import { IReturnRequest } from "../interfaces";
-import { AccountModel, BalanceModel, TransactionModel, VnpayTransactionModel } from "../models";
-import utils from "../utils";
+import { AccountModel, BalanceModel, NotificationModel, TransactionModel, VnpayTransactionModel } from "../models";
+import utils, { sendToAccount } from "../utils";
 import BaseBusiness from "./BaseBusiness";
 import config from "config";
 import qs from "qs";
 import crypto from "crypto";
+import { NOTIFICATION_TYPES } from "../constants";
 
 class VnpayTransactionBusiness {
 
   vnpayConfig = config.get("vnpConfig");
 
   CreatePaymentUrl = async (req) => {
+
     process.env.TZ = "Asia/Ho_Chi_Minh";
     try {
 
@@ -68,7 +70,7 @@ class VnpayTransactionBusiness {
         vnp_IpAddr: vnpayTransaction.vnp_IpAddr,
         vnp_CreateDate: vnpayTransaction.vnp_CreateDate,
         ...(() => {
-          if (vnpayTransaction.vnp_BankCode != null) {
+          if (vnpayTransaction.vnp_BankCode != null && vnpayTransaction.vnp_BankCode.length > 0) {
             return {
               vnp_BankCode: vnpayTransaction.vnp_BankCode,
             }
@@ -126,6 +128,7 @@ class VnpayTransactionBusiness {
   IPN = async (req) => {
     try {
 
+      debugger
       var vnp_Params = req.query;
       var secureHash = vnp_Params['vnp_SecureHash'];
 
@@ -151,7 +154,8 @@ class VnpayTransactionBusiness {
       const vnpayTransaction = await VnpayTransactionModel.findOne({
         where: {
           vnp_TxnRef: vnp_Params["vnp_TxnRef"]
-        }
+        },
+        include: [AccountModel]
       })
 
       if (vnpayTransaction == null) {
@@ -168,7 +172,7 @@ class VnpayTransactionBusiness {
         }
       });
       if (transaction != null) {
-        return BaseBusiness.Success({ RspCode: '02', Message: 'This order has been updated to the payment status' });
+        //return BaseBusiness.Success({ RspCode: '02', Message: 'This order has been updated to the payment status' });
       }
 
       const newTransaction = await TransactionModel.create({
@@ -194,6 +198,19 @@ class VnpayTransactionBusiness {
             accountId: vnpayTransaction.accountId,
           },
         });
+
+        debugger
+
+        const noti = await NotificationModel.create({
+          type: NOTIFICATION_TYPES.BALANCE,
+          code: `NOT-${utils.generateUniqueString(6)}`,
+          title: "Nạp tiền thành công",
+          content: `Bạn đã nạp thành công ${vnpayTransaction.vnp_Amount} vào tài khoản`,
+          isViewed: false,
+          accountId: vnpayTransaction.account.id,
+        });
+
+        sendToAccount(vnpayTransaction.account.code, JSON.stringify(noti));
 
       }
 

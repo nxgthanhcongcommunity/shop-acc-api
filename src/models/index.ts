@@ -4,6 +4,7 @@ import ProductModel from "./productModel";
 import KeypairModel from "./keypairModel";
 import BalanceModel from "./balanceModel";
 import TransactionModel from "./transactionModel";
+import NotificationModel from "./notificationModel";
 import InvoiceModel from "./invoiceModel";
 import InvoiceDetailModel from "./invoiceDetailModel";
 import QuantityModel from "./quantityModel";
@@ -36,6 +37,7 @@ sequelize.addModels([
     InvoiceModel,
     InvoiceDetailModel,
     VnpayTransactionModel,
+    NotificationModel,
 ]);
 
 (async () => {
@@ -60,6 +62,7 @@ export {
     KeypairModel,
     BalanceModel,
     TransactionModel,
+    NotificationModel,
     VnpayTransactionModel,
     InvoiceModel,
     InvoiceDetailModel,
