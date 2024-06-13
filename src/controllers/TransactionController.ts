@@ -83,7 +83,6 @@ class TransactionController extends BaseController {
       RequestHandler.sendError(res);
     }
   }
-
 }
 
 export default new TransactionController();

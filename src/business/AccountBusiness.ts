@@ -2,21 +2,16 @@ import {
   IGetAccountBalanceByCodeRequest,
   IGetAccountsRequest,
   IGetAccountsResponse,
-  IResponse
+  IResponse,
 } from "../interfaces";
-import {
-  AccountModel,
-  BalanceModel,
-  NotificationModel
-} from "../models";
+import { AccountModel, BalanceModel, NotificationModel } from "../models";
 import BaseBusiness from "./BaseBusiness";
 
 class AccountBusiness {
-
-  GetAccounts = async (reqObj: IGetAccountsRequest): Promise<IResponse<IGetAccountsResponse>> => {
-
+  GetAccounts = async (
+    reqObj: IGetAccountsRequest
+  ): Promise<IResponse<IGetAccountsResponse>> => {
     try {
-
       const { page, limit, name } = reqObj;
 
       const data = await AccountModel.findAll({
@@ -30,16 +25,16 @@ class AccountBusiness {
 
       return BaseBusiness.Success({
         total,
-        data
-      })
-
+        data,
+      });
     } catch (err) {
       return BaseBusiness.Error();
     }
-  }
+  };
 
-  GetAccountBalanceByCode = async (reqObj: IGetAccountBalanceByCodeRequest): Promise<IResponse<AccountModel>> => {
-
+  GetAccountBalanceByCode = async (
+    reqObj: IGetAccountBalanceByCodeRequest
+  ): Promise<IResponse<AccountModel>> => {
     try {
       const { code } = reqObj;
 
@@ -54,10 +49,9 @@ class AccountBusiness {
     } catch (err) {
       return BaseBusiness.Error();
     }
-  }
+  };
 
   GetNotifications = async (req) => {
-
     try {
       const { accountCode } = req.query;
 
@@ -65,20 +59,29 @@ class AccountBusiness {
         where: {
           code: accountCode,
         },
-        include: [{
-          model: NotificationModel,
-          order: [["updatedAt", "DESC"]],
-        }],
+        include: [
+          {
+            model: NotificationModel,
+            as: "notifications",
+          },
+        ],
+        order: [
+          [
+            { model: NotificationModel, as: "notifications" },
+            "createdAt",
+            "desc",
+          ],
+        ],
       });
 
       return BaseBusiness.Success(record);
     } catch (err) {
+      console.log(err);
       return BaseBusiness.Error();
     }
-  }
+  };
 
   MarkNotificationsRead = async (req) => {
-
     try {
       const { code, accountCode } = req.query;
 
@@ -93,22 +96,22 @@ class AccountBusiness {
       //   });
       // }
 
-      const record = await NotificationModel.update({
-        isViewed: true,
-      }, {
-        where: {
-          code,
+      const record = await NotificationModel.update(
+        {
+          isViewed: true,
         },
-      });
+        {
+          where: {
+            code,
+          },
+        }
+      );
 
       return BaseBusiness.Success(true);
     } catch (err) {
       return BaseBusiness.Error();
     }
-  }
-
-
-
+  };
 }
 
 export default AccountBusiness;
