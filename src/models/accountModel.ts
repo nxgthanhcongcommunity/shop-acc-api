@@ -14,7 +14,7 @@ import Transaction from "./transactionModel";
 import Invoice from "./invoiceModel";
 import Notification from "./notificationModel";
 
-interface IAccountAttributes {
+export interface IAccountAttributes {
   id: number;
   code: string;
   idAtProvider: string;
@@ -28,7 +28,7 @@ interface IAccountAttributes {
   role: string;
 }
 
-interface IAccountCreationAttributes
+export interface IAccountCreationAttributes
   extends Optional<IAccountAttributes, "id"> { }
 
 @Table({

@@ -10,7 +10,7 @@ import {
 import Invoice from "./invoiceModel";
 import Product from "./productModel";
 
-interface IInvoiceDetailAttributes {
+export interface IInvoiceDetailAttributes {
   id: number;
   invoiceId: number;
   productId: number;
@@ -19,8 +19,8 @@ interface IInvoiceDetailAttributes {
   totalPrice: number;
 }
 
-interface IInvoiceDetailCreationAttributes
-  extends Optional<IInvoiceDetailAttributes, "id"> {}
+export interface IInvoiceDetailCreationAttributes
+  extends Optional<IInvoiceDetailAttributes, "id"> { }
 
 @Table({
   timestamps: true,

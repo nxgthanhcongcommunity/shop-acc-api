@@ -11,7 +11,7 @@ interface ISendMailAttributes {
   succeed: boolean;
 }
 
-interface ISendMailCreationAttributes extends Optional<ISendMailAttributes, 'id'> { }
+export interface ISendMailCreationAttributes extends Optional<ISendMailAttributes, 'id'> { }
 
 @Table({
   timestamps: true,

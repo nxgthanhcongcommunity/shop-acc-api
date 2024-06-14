@@ -1,0 +1,120 @@
+import axios from "axios";
+import { IHandleGoggleLoginAsyncRequest, IHandleGoggleLoginAsyncResponse, IResponse } from "../interfaces";
+import { AccountModel, BalanceModel } from "../models";
+import utils, { jwtUtils, logUtils } from "../utils";
+import { ROLE } from "../constants";
+import BaseBusiness from "./BaseBusiness";
+import { AccountRepository, AuthRepository } from "../repositories";
+import { IGetUserInfoFromGoogleReq } from "repositories/AuthRepository";
+
+// const { GOOGLE_CLIENT_ID } = process.env;
+// const { OAuth2Client } = require("google-auth-library");
+// const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+class AuthBusiness {
+    /*
+    async GoogleCallback(req, res) {
+        try {
+            if (!req.user) {
+                res.status(400).json({ error: "Authentication failed" });
+                return;
+            }
+
+            const user = {
+                providerId: req.user.id,
+                familyName: req.user.name.familyName,
+                givenName: req.user.name.givenName,
+                email: req.user.emails[0].value,
+                photo: req.user.photos[0].value,
+                provider: req.user.provider,
+            };
+
+            let createdAccount;
+
+            const accountInDatabase = await AccountModel.findOne({
+                where: {
+                    idAtProvider: user.providerId,
+                    providerName: user.provider,
+                },
+            });
+            createdAccount = accountInDatabase;
+
+            if (!accountInDatabase) {
+                const newAccount = await AccountModel.create({
+                    idAtProvider: user.providerId,
+                    familyName: user.familyName,
+                    givenName: user.givenName,
+                    email: user.email,
+                    isVerifyEmail: true,
+                    photo: user.photo,
+                    providerName: user.provider,
+                    role: ROLE.MEMBER,
+                });
+                await BalanceModel.create({
+                    accountId: newAccount.id,
+                    amount: 0,
+                });
+                createdAccount = newAccount;
+            }
+
+            const token = generateToken({
+                id: createdAccount.id,
+                role: createdAccount.role,
+            });
+
+            res.status(200).json({
+                token,
+            });
+        } catch (ex) {
+            RequestHandler.sendError(res);
+        }
+    }
+
+    async FacebookCallback(req, res) {
+        try {
+            if (!req.user) {
+                res.status(400).json({ error: "Authentication failed" });
+            }
+            res.status(200).json(req.user);
+        } catch (ex) {
+            RequestHandler.sendError(res);
+        }
+    }
+    */
+
+}
+
+export default AuthBusiness;
+
+/*
+
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["email", "profile"],
+  })
+);
+
+router.get(
+  "/google-callback",
+  passport.authenticate("google", {
+    session: false,
+    access_type: "offline",
+    scope: ["email", "profile"],
+  }),
+  AuthController.GoogleCallback
+);
+
+router.get("/facebook", passport.authenticate("facebook"));
+
+router.get(
+  "/facebook-callback",
+  passport.authenticate("facebook", {
+    session: false,
+    failureRedirect: "/login",
+  }),
+  AuthController.FacebookCallback
+);
+
+
+*/

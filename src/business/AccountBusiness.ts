@@ -1,115 +1,109 @@
+import { IGetBalanceByAccountCodeReq, IGetNotificationsByAccountCodeReq } from "repositories/AccountRepository";
 import {
-  IGetAccountBalanceByCodeRequest,
-  IGetAccountsRequest,
   IGetAccountsResponse,
-  IResponse,
+  IResponse
 } from "../interfaces";
-import { AccountModel, BalanceModel, NotificationModel } from "../models";
+import { AccountModel } from "../models";
+import { AccountRepository } from "../repositories";
+import { logUtils, validateUtils } from "../utils";
 import BaseBusiness from "./BaseBusiness";
 
 class AccountBusiness {
-  GetAccounts = async (
-    reqObj: IGetAccountsRequest
-  ): Promise<IResponse<IGetAccountsResponse>> => {
+
+  _accountRepository = new AccountRepository();
+
+  GetAccounts = async (req): Promise<IResponse<IGetAccountsResponse>> => {
     try {
-      const { page, limit, name } = reqObj;
 
-      const data = await AccountModel.findAll({
-        offset: page > 0 ? (page - 1) * limit : null,
-        limit: limit || null,
-        order: [["updatedAt", "DESC"]],
-        include: [BalanceModel],
-      });
+      const records = await this._accountRepository.GetAll(req.query);
+      const total = await this._accountRepository.CountAll();
 
-      const total = await AccountModel.count();
+      return BaseBusiness.Success({ records, total });
 
-      return BaseBusiness.Success({
-        total,
-        data,
-      });
-    } catch (err) {
+    } catch (ex) {
+
+      logUtils.logError(ex);
       return BaseBusiness.Error();
+
     }
   };
 
-  GetAccountBalanceByCode = async (
-    reqObj: IGetAccountBalanceByCodeRequest
-  ): Promise<IResponse<AccountModel>> => {
+  GetAccountBalanceByCode = async (req): Promise<IResponse<AccountModel>> => {
     try {
-      const { code } = reqObj;
 
-      const record = await AccountModel.findOne({
-        where: {
-          code,
-        },
-        include: [BalanceModel],
-      });
+      const reqModel = req.query as IGetBalanceByAccountCodeReq;
+
+      if (validateUtils.isEmpty([reqModel.accountCode])) {
+        return BaseBusiness.ClientError("f:accountCode can not empty!!");
+      }
+
+      const record = await this._accountRepository.GetBalanceByAccountCode(reqModel)
 
       return BaseBusiness.Success(record);
-    } catch (err) {
+
+    } catch (ex) {
+
+      logUtils.logError(ex);
       return BaseBusiness.Error();
+
     }
   };
 
   GetNotifications = async (req) => {
     try {
-      const { accountCode } = req.query;
 
-      const record = await AccountModel.findOne({
-        where: {
-          code: accountCode,
-        },
-        include: [
-          {
-            model: NotificationModel,
-            as: "notifications",
-          },
-        ],
-        order: [
-          [
-            { model: NotificationModel, as: "notifications" },
-            "createdAt",
-            "desc",
-          ],
-        ],
-      });
+      const reqModel = req.query as IGetNotificationsByAccountCodeReq;
+
+      if (validateUtils.isEmpty([reqModel.accountCode])) {
+        return BaseBusiness.ClientError("f:accountCode can not empty!!");
+      }
+
+      const record = await this._accountRepository.GetNotificationsByAccountCode(reqModel);
 
       return BaseBusiness.Success(record);
-    } catch (err) {
-      console.log(err);
+
+    } catch (ex) {
+
+      logUtils.logError(ex);
       return BaseBusiness.Error();
+
     }
   };
 
   MarkNotificationsRead = async (req) => {
     try {
-      const { code, accountCode } = req.query;
 
-      // if (code == null || code.length == 0) {
-      //   const record = await AccountModel.update({
+      const { code, accountCode } = req.body;
 
-      //   },{
-      //     where: {
-      //       code,
-      //       accountCode,
-      //     },
-      //   });
-      // }
+      if (validateUtils.isEmpty([code, accountCode])) {
+        return BaseBusiness.ClientError("f:code and f:accountCode can not empty at the same time!!");
+      }
 
-      const record = await NotificationModel.update(
-        {
-          isViewed: true,
-        },
-        {
-          where: {
-            code,
-          },
-        }
-      );
+      if (accountCode != null && accountCode.length > 0) {
 
-      return BaseBusiness.Success(true);
-    } catch (err) {
+        const account = await this._accountRepository.GetAccountByCode({
+          code: accountCode
+        });
+        if (account == null) return BaseBusiness.Error("Account is not exist!!");
+
+        const result = await this._accountRepository.MarkNotificationRead({
+          accountId: account.id,
+        });
+
+        return BaseBusiness.Success(result);
+      }
+
+      const result = await this._accountRepository.MarkNotificationRead({
+        code,
+      });
+
+      return BaseBusiness.Success(result);
+
+    } catch (ex) {
+
+      logUtils.logError(ex);
       return BaseBusiness.Error();
+
     }
   };
 }

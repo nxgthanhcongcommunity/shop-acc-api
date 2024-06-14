@@ -7,5 +7,5 @@ export interface IQueryBaseRequest {
 
 export interface IQueryBaseResponse<T> {
     total: number;
-    data: T[];
+    records: T[];
 }

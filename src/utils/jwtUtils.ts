@@ -31,4 +31,4 @@ const verifyToken = (token) => {
     }
 };
 
-export { generateToken, verifyToken };
+export default { generateToken, verifyToken };

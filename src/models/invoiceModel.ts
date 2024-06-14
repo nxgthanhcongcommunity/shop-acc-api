@@ -11,7 +11,7 @@ import {
 import Account from "./accountModel";
 import InvoiceDetail from "./invoiceDetailModel";
 
-interface IInvoiceAttributes {
+export interface IInvoiceAttributes {
   id: number;
   code: string;
   accountId: number;
@@ -21,7 +21,7 @@ interface IInvoiceAttributes {
   paymentMethod: string;
 }
 
-interface IInvoiceCreationAttributes
+export interface IInvoiceCreationAttributes
   extends Optional<IInvoiceAttributes, "id"> { }
 
 @Table({

@@ -7,6 +7,14 @@ class BaseBusiness {
     //     data: null
     // }
 
+    static ClientError(message?: string): IResponse<any> {
+        return {
+            succeed: false,
+            message: message || "server error",
+            data: null
+        }
+    }
+
     static Error(message?: string): IResponse<any> {
         return {
             succeed: false,
