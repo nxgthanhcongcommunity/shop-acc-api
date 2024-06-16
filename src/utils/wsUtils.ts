@@ -24,4 +24,4 @@ const sendToAccount = (accountCode, data) => {
   }
 };
 
-export { sendToAccount };
+export default { sendToAccount };

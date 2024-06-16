@@ -23,14 +23,14 @@ interface IVnpayTransactionAttributes {
   vnp_OrderInfo: string;
   vnp_OrderType: string;
   vnp_ReturnUrl: string;
-  vnp_ExpireDate: string;
+  // vnp_ExpireDate: string;
   vnp_TxnRef: string;
   vnp_SecureHash: string;
   accountId: number;
 }
 
-interface IVnpayTransactionCreationAttributes
-  extends Optional<IVnpayTransactionAttributes, "id"> { }
+export interface IVnpayTransactionCreationAttributes
+  extends Optional<IVnpayTransactionAttributes, "id"> {}
 
 @Table({
   timestamps: true,
@@ -119,10 +119,10 @@ class VnpayTransaction extends Model<
   })
   vnp_ReturnUrl!: string;
 
-  @Column({
-    type: DataType.STRING,
-  })
-  vnp_ExpireDate: string;
+  // @Column({
+  //   type: DataType.STRING,
+  // })
+  // vnp_ExpireDate: string;
 
   @Column({
     type: DataType.STRING,

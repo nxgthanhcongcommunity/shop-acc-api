@@ -1,7 +1,15 @@
-
-import { Optional, } from 'sequelize';
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table, HasMany, HasOne } from 'sequelize-typescript';
-import Account from './accountModel';
+import { Optional } from "sequelize";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+  HasMany,
+  HasOne,
+} from "sequelize-typescript";
+import Account from "./accountModel";
 
 interface INotificationAttributes {
   id: number;
@@ -13,15 +21,18 @@ interface INotificationAttributes {
   isViewed: boolean;
 }
 
-interface INotificationCreationAttributes extends Optional<INotificationAttributes, 'id'> { }
+export interface INotificationCreationAttributes
+  extends Optional<INotificationAttributes, "id"> {}
 
 @Table({
   timestamps: true,
   paranoid: true,
   tableName: "Notifications",
 })
-class Notification extends Model<INotificationAttributes, INotificationCreationAttributes> {
-
+class Notification extends Model<
+  INotificationAttributes,
+  INotificationCreationAttributes
+> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -66,9 +77,8 @@ class Notification extends Model<INotificationAttributes, INotificationCreationA
   })
   accountId!: number;
 
-  @BelongsTo(() => Account, 'accountId')
+  @BelongsTo(() => Account, "accountId")
   account: Account;
-
 }
 
 export default Notification;
