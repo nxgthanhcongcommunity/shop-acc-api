@@ -126,10 +126,12 @@ class ProductController {
     try {
       const { page, limit, categoryCode } = req.query;
 
+
+
       const data = await ProductModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
         limit: limit > 0 ? limit : null,
-
+        where: categoryCode,
         order: [["updatedAt", "DESC"]],
       });
 

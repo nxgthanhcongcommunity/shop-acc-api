@@ -23,8 +23,8 @@ interface ITransactionAttributes {
   accountId: number;
 }
 
-interface ITransactionCreationAttributes
-  extends Optional<ITransactionAttributes, "id"> { }
+export interface ITransactionCreationAttributes
+  extends Optional<ITransactionAttributes, "id"> {}
 
 @Table({
   timestamps: true,
