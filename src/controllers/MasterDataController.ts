@@ -4,8 +4,8 @@ class MasterDataController {
   async GetByKey(req, res) {
     try {
       const data = {
-
-        logoUrl: "dgb-logo.png",
+        logoUrl:
+          "shop-acc/dragon_ball_legends_2nd_anniversary_logo_by_maxiuchiha22_ddyaofk-fullview.png_nbtixv",
         shopName: "",
         menuItems: [
           {
@@ -53,17 +53,17 @@ class MasterDataController {
           {
             code: utils.generateUniqueString(6),
             title: "Title cho slide số 1",
-            cdlId: "1143254.jpg",
+            cdlId: "shop-acc/BANNER-SHOPTIENZOMBIE-VN_hpnuyl",
           },
           {
             code: utils.generateUniqueString(6),
             title: "Title cho slide số 2",
-            cdlId: "2312321.jpg",
+            cdlId: "shop-acc/BANNER-SHOPTIENZOMBIE-VN_hpnuyl",
           },
           {
             code: utils.generateUniqueString(6),
             title: "Title cho slide số 3",
-            cdlId: "2344324.jpg",
+            cdlId: "shop-acc/BANNER-SHOPTIENZOMBIE-VN_hpnuyl",
           },
         ],
         banners: [

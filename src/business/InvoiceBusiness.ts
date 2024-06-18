@@ -25,9 +25,9 @@ class InvoiceBusiness {
     try {
       const { invoice, invoiceDetails }: ICreateReq = req.body;
 
-      const account = await this._accountRepository.GetAccountByCode(
-        invoice.accountCode
-      );
+      const account = await this._accountRepository.GetAccountByCode({
+        accountCode: invoice.accountCode,
+      });
       if (account == null) return BaseBusiness.Error("Account do not exist!!");
 
       const createdInvoice = await this._invoiceRepository.CreateInvoice({
