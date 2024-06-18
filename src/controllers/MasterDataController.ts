@@ -70,6 +70,7 @@ class MasterDataController {
           {
             name: "Acc sẵn char giá rẻ đến vip",
             code: "BN-5NWKQO",
+            tag: "Best seller",
             column: {
               pc: 4,
               mb: 1,
@@ -79,6 +80,7 @@ class MasterDataController {
           {
             name: "Acc reroll abc",
             code: "BN-B8AXNI",
+            tag: "Best seller",
             column: {
               pc: 2,
               mb: 1,
@@ -87,10 +89,12 @@ class MasterDataController {
           {
             name: "Acc trên 50k",
             code: "BN-W8VJQQ",
+            tag: "Best seller",
           },
           {
             name: "Acc trên 100k",
             code: "BN-MPIWVW",
+            tag: "Best seller",
           },
         ],
       };

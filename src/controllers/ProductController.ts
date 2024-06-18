@@ -124,26 +124,12 @@ class ProductController {
 
   async GetProductsByCategoryCode(req, res) {
     try {
-      const { page, limit, name = "", code: categoryCode } = req.query;
+      const { page, limit, categoryCode } = req.query;
 
       const data = await ProductModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
-        limit: limit || null,
-        // where: {
-        //   name: {
-        //     [Op.and]: [
-        //       Sequelize.where(
-        //         Sequelize.fn("LENGTH", Sequelize.col("name")),
-        //         ">",
-        //         0
-        //       ),
-        //       {
-        //         [Op.like]: `%${name}%`,
-        //       },
-        //     ],
-        //   },
-        //   categoryCode: categoryCode,
-        // },
+        limit: limit > 0 ? limit : null,
+
         order: [["updatedAt", "DESC"]],
       });
 
