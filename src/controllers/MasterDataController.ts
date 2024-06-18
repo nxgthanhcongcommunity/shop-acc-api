@@ -53,17 +53,17 @@ class MasterDataController {
           {
             code: utils.generateUniqueString(6),
             title: "Title cho slide số 1",
-            imgUrl: "1143254.jpg",
+            cdlId: "1143254.jpg",
           },
           {
             code: utils.generateUniqueString(6),
             title: "Title cho slide số 2",
-            imgUrl: "2312321.jpg",
+            cdlId: "2312321.jpg",
           },
           {
             code: utils.generateUniqueString(6),
             title: "Title cho slide số 3",
-            imgUrl: "2344324.jpg",
+            cdlId: "2344324.jpg",
           },
         ],
         banners: [

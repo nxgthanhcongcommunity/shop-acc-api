@@ -5,3 +5,6 @@ export { default as VnpayTransactionRepository } from "./VnpayTransactionReposit
 export { default as TransactionRepository } from "./TransactionRepository";
 export { default as BalanceRepository } from "./BalanceRepository";
 export { default as NotificationRepository } from "./NotificationRepository";
+export { default as CategoryRepository } from "./CategoryRepository";
+
+

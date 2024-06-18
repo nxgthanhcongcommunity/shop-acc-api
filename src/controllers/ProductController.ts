@@ -126,8 +126,6 @@ class ProductController {
     try {
       const { page, limit, categoryCode } = req.query;
 
-
-
       const data = await ProductModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
         limit: limit > 0 ? limit : null,
@@ -144,7 +142,7 @@ class ProductController {
     }
   }
 
-  async GetProductCode(req, res) {
+  async GetProductByCode(req, res) {
     try {
       const { code: productCode } = req.query;
 
@@ -153,6 +151,7 @@ class ProductController {
           code: productCode,
         },
         order: [["updatedAt", "DESC"]],
+        include: [CategoryModel],
       });
 
       const relatedProducts = await ProductModel.findAll({
