@@ -1,4 +1,5 @@
-import { verifyToken } from "../utils/jwtUtils";
+import { jwtUtils } from "../utils";
+
 
 const verifyTokenMiddleware = (roles) => {
     return (req, res, next) => {
@@ -6,7 +7,7 @@ const verifyTokenMiddleware = (roles) => {
         const authorization = req.headers.authorization;
         const token = authorization?.slice(7);
 
-        const decoded = verifyToken(token);
+        const decoded = jwtUtils.verifyToken(token);
 
         if (decoded == null) {
             res.status(401).json({
@@ -16,6 +17,8 @@ const verifyTokenMiddleware = (roles) => {
             })
             return;
         }
+
+        console.log(decoded)
 
         const role = decoded.account.role;
 

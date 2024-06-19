@@ -33,7 +33,7 @@ class VnpayTransactionBusiness {
       const { bankCode, amount, accountCode } = req.body;
 
       const account = await this._accountRepository.GetAccountByCode({
-        code: accountCode,
+        accountCode,
       });
       if (account == null) {
         return BaseBusiness.Error("Account not found!");

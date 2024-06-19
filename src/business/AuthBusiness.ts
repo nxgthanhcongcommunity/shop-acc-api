@@ -13,7 +13,6 @@ class AuthBusiness {
 
     HandleGoggleLoginAsync = async (req): Promise<IResponse<IHandleGoggleLoginAsyncResponse>> => {
 
-
         try {
             const reqModel: IGetUserInfoFromGoogleReq = req.body;
             if (validateUtils.isEmpty[reqModel.access_token]) {
@@ -55,12 +54,65 @@ class AuthBusiness {
                 givenName: createdAccount.givenName,
                 email: createdAccount.email,
                 photo: createdAccount.photo,
+                role: "MEMBER",
+            });
+
+            const refreshToken = jwtUtils.generateRefreshToken({
+                id: createdAccount.id,
+                code: createdAccount.code,
+                familyName: createdAccount.familyName,
+                givenName: createdAccount.givenName,
+                email: createdAccount.email,
+                photo: createdAccount.photo,
+                role: "MEMBER",
             });
 
             return BaseBusiness.Success({
                 token,
-                refreshToken: "",
+                refreshToken,
             })
+        } catch (ex) {
+            logUtils.logError(ex);
+            return BaseBusiness.Error();
+        }
+    }
+
+    RefreshTokenAsync = async (req) => {
+        try {
+            const { refreshToken } = req.body;
+            if (!refreshToken)
+                return BaseBusiness.ClientError("p:refreshToken not found!!");
+
+            const decoded = jwtUtils.verifyRefreshToken(refreshToken);
+            if (decoded == null)
+                return BaseBusiness.ClientError("RefreshToken not valid!!");
+
+            const account = decoded.account;
+
+            const newToken = jwtUtils.generateToken({
+                id: account.id,
+                code: account.code,
+                familyName: account.familyName,
+                givenName: account.givenName,
+                email: account.email,
+                photo: account.photo,
+            });
+
+            const newRefreshToken = jwtUtils.generateRefreshToken({
+                id: account.id,
+                code: account.code,
+                familyName: account.familyName,
+                givenName: account.givenName,
+                email: account.email,
+                photo: account.photo,
+                role: "MEMBER",
+            });
+            return BaseBusiness.Success({
+                token: newToken,
+                refreshToken: newRefreshToken,
+                role: "MEMBER",
+            });
+
         } catch (ex) {
             logUtils.logError(ex);
             return BaseBusiness.Error();

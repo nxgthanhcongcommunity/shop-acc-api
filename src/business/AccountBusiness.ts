@@ -82,7 +82,7 @@ class AccountBusiness {
       if (accountCode != null && accountCode.length > 0) {
 
         const account = await this._accountRepository.GetAccountByCode({
-          code: accountCode
+          accountCode
         });
         if (account == null) return BaseBusiness.Error("Account is not exist!!");
 
