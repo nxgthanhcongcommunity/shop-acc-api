@@ -16,6 +16,18 @@ class TransactionRepository {
     });
     return record;
   };
+
+  GetTransactionHistoryAsync = async (reqModel) => {
+    const { accountId } = reqModel;
+    const records = await TransactionModel.findAll({
+      where: {
+        accountId,
+      },
+      attributes: { exclude: ['raw'] },
+      order: [["createdAt", "desc"]],
+    });
+    return records;
+  };
 }
 
 export default TransactionRepository;

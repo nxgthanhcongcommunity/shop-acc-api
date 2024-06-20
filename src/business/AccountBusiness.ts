@@ -28,6 +28,23 @@ class AccountBusiness {
     }
   };
 
+  GetAccountByCode = async (req) => {
+    try {
+
+      const record = await this._accountRepository.GetAccountByCode({
+        accountCode: req.query.accountCode
+      });
+
+      return BaseBusiness.Success(record);
+
+    } catch (ex) {
+
+      logUtils.logError(ex);
+      return BaseBusiness.Error();
+
+    }
+  };
+
   GetAccountBalanceByCode = async (req): Promise<IResponse<AccountModel>> => {
     try {
 

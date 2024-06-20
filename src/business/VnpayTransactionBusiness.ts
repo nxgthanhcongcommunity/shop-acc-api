@@ -174,7 +174,7 @@ class VnpayTransactionBusiness {
         });
       }
 
-      const transaction = this._transactionRepository.GetTransactionByRef({
+      const transaction = await this._transactionRepository.GetTransactionByRef({
         refNo: vnp_Params["vnp_TxnRef"],
       });
       if (transaction != null) {

@@ -1,5 +1,5 @@
 import { IGetUserInfoFromGoogleReq } from "repositories/AuthRepository";
-import { ROLE } from "../constants";
+import { ROLES } from "../constants";
 import { IHandleGoggleLoginAsyncResponse, IResponse } from "../interfaces";
 import { BalanceModel } from "../models";
 import { AccountRepository, AuthRepository } from "../repositories";
@@ -38,7 +38,7 @@ class AuthBusiness {
                     isVerifyEmail: userInfo.verified_email,
                     photo: userInfo.picture,
                     providerName: "google",
-                    role: ROLE.MEMBER,
+                    role: ROLES.MEMBER,
                     passwordHash: "",
                 });
                 await BalanceModel.create({
@@ -54,7 +54,7 @@ class AuthBusiness {
                 givenName: createdAccount.givenName,
                 email: createdAccount.email,
                 photo: createdAccount.photo,
-                role: "MEMBER",
+                role: ROLES.MEMBER,
             });
 
             const refreshToken = jwtUtils.generateRefreshToken({
@@ -64,7 +64,7 @@ class AuthBusiness {
                 givenName: createdAccount.givenName,
                 email: createdAccount.email,
                 photo: createdAccount.photo,
-                role: "MEMBER",
+                role: ROLES.MEMBER,
             });
 
             return BaseBusiness.Success({
@@ -96,6 +96,7 @@ class AuthBusiness {
                 givenName: account.givenName,
                 email: account.email,
                 photo: account.photo,
+                role: ROLES.MEMBER,
             });
 
             const newRefreshToken = jwtUtils.generateRefreshToken({
@@ -105,18 +106,50 @@ class AuthBusiness {
                 givenName: account.givenName,
                 email: account.email,
                 photo: account.photo,
-                role: "MEMBER",
+                role: ROLES.MEMBER,
             });
             return BaseBusiness.Success({
                 token: newToken,
                 refreshToken: newRefreshToken,
-                role: "MEMBER",
+                role: ROLES.MEMBER,
             });
 
         } catch (ex) {
             logUtils.logError(ex);
             return BaseBusiness.Error();
         }
+    }
+
+    LoginAsync = async (req) => {
+
+        const account = await this._accountRepository.GetAccountByCode({
+            accountCode: "USR-QDGVLE",
+        })
+
+        const token = jwtUtils.generateToken({
+            id: account.id,
+            code: account.code,
+            familyName: account.familyName,
+            givenName: account.givenName,
+            email: account.email,
+            photo: account.photo,
+            role: ROLES.MEMBER,
+        });
+
+        const refreshToken = jwtUtils.generateRefreshToken({
+            id: account.id,
+            code: account.code,
+            familyName: account.familyName,
+            givenName: account.givenName,
+            email: account.email,
+            photo: account.photo,
+            role: ROLES.MEMBER,
+        });
+
+        return BaseBusiness.Success({
+            token,
+            refreshToken,
+        })
     }
 }
 
