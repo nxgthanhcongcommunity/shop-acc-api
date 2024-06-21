@@ -1,7 +1,10 @@
 const validateUtils = {
-    isEmpty: (arr: string[]) => {
-        return arr.some(item => ("" + item).length == 0)
-    }
+    isEmpty: (arr) => {
+        return arr.some(item => item == null || item.length == 0)
+    },
+    isArrayAllEmpty: (arr: string[]) => {
+        return arr.every(element => element === "" || element === null || element === undefined);
+    },
 }
 
 export default validateUtils;

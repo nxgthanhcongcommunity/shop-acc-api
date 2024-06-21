@@ -93,8 +93,7 @@ class AccountRepository {
     return true;
   };
 
-  GetAccountByCode = async (req) => {
-    const { accountCode } = req;
+  GetAccountByCode = async (accountCode: string) => {
     const record = await AccountModel.findOne({
       where: {
         code: accountCode,

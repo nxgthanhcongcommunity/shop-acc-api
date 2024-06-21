@@ -32,9 +32,7 @@ class VnpayTransactionBusiness {
         req.connection.socket.remoteAddress;
       const { bankCode, amount, accountCode } = req.body;
 
-      const account = await this._accountRepository.GetAccountByCode({
-        accountCode,
-      });
+      const account = await this._accountRepository.GetAccountByCode(accountCode);
       if (account == null) {
         return BaseBusiness.Error("Account not found!");
       }

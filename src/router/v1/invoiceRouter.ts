@@ -8,5 +8,6 @@ router.post("/create", verifyTokenMiddleware(ROLES.MEMBER), InvoiceController.Cr
 router.get("/get", verifyTokenMiddleware(ROLES.ADMIN), InvoiceController.GetAll);
 router.get("/get-invoice-by-code", verifyTokenMiddleware(ROLES.MEMBER), InvoiceController.GetInvoiceByCode);
 router.get("/get-invoice-details", verifyTokenMiddleware(ROLES.ADMIN), InvoiceController.GetInvoiceDetails);
+router.get("/get-purchase-history", InvoiceController.GetPurchaseHistoryAsync); //verifyTokenMiddleware(ROLES.MEMBER),
 
 export default router;

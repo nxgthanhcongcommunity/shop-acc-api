@@ -1,7 +1,7 @@
 import { IInvoiceDetailCreationAttributes } from "models/invoiceDetailModel";
 import { InvoiceDetailModel, InvoiceModel, ProductModel } from "../models";
 import { AccountRepository, InvoiceRepository } from "../repositories";
-import utils, { logUtils } from "../utils";
+import utils, { logUtils, validateUtils } from "../utils";
 import BaseBusiness from "./BaseBusiness";
 
 interface ICreateReq {
@@ -25,9 +25,7 @@ class InvoiceBusiness {
     try {
       const { invoice, invoiceDetails }: ICreateReq = req.body;
 
-      const account = await this._accountRepository.GetAccountByCode({
-        accountCode: invoice.accountCode,
-      });
+      const account = await this._accountRepository.GetAccountByCode(invoice.accountCode);
       if (account == null) return BaseBusiness.Error("Account do not exist!!");
 
       const createdInvoice = await this._invoiceRepository.CreateInvoice({
@@ -149,6 +147,32 @@ class InvoiceBusiness {
       return BaseBusiness.Error();
     }
   };
+
+  GetPurchaseHistoryAsync = async (req) => {
+    try {
+
+      const { accountCode } = req.query;
+      if (validateUtils.isEmpty([accountCode])) {
+        return BaseBusiness.ClientError("Mã tài khoản không được để trống!!");
+      }
+
+      const account = await this._accountRepository.GetAccountByCode(accountCode);
+      if (account == null) return BaseBusiness.ClientError("User không tồn tại trong hệ thống!!");
+
+      const records = await this._invoiceRepository.GetInvoicesByAccountIdAsync(account.id);
+      const total = records.length;
+
+      return BaseBusiness.Success({
+        total,
+        records,
+      })
+
+    } catch (ex) {
+      logUtils.logError(ex);
+      return BaseBusiness.Error();
+    }
+  };
+
 }
 
 export default InvoiceBusiness;

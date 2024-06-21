@@ -104,6 +104,24 @@ class InvoiceRepository {
         return record;
     }
 
+    GetInvoicesByAccountIdAsync = async (accountId: number, page?: number, limit?: number) => {
+
+        const records = await InvoiceModel.findAll({
+            offset: page > 0 ? ((page - 1) * limit) : null,
+            limit: limit > 0 ? limit : null,
+            order: [["updatedAt", "DESC"]],
+            where: {
+                accountId,
+            },
+            include: [{
+                model: InvoiceDetailModel,
+                include: [ProductModel],
+            }],
+        });
+
+        return records;
+    }
+
 }
 
 export default InvoiceRepository;

@@ -17,6 +17,9 @@ class InvoiceController extends BaseController {
   GetInvoiceByCode = async (req, res) =>
     this.ProcessAsync(res, () => this._invoiceBusiness.GetInvoiceByCode(req));
 
+  GetPurchaseHistoryAsync = async (req, res) =>
+    this.ProcessAsync(res, () => this._invoiceBusiness.GetPurchaseHistoryAsync(req));
+
 }
 
 export default new InvoiceController();

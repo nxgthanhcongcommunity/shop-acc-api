@@ -31,9 +31,8 @@ class AccountBusiness {
   GetAccountByCode = async (req) => {
     try {
 
-      const record = await this._accountRepository.GetAccountByCode({
-        accountCode: req.query.accountCode
-      });
+      const { accountCode } = req.query;
+      const record = await this._accountRepository.GetAccountByCode(accountCode);
 
       return BaseBusiness.Success(record);
 
@@ -98,9 +97,7 @@ class AccountBusiness {
 
       if (accountCode != null && accountCode.length > 0) {
 
-        const account = await this._accountRepository.GetAccountByCode({
-          accountCode
-        });
+        const account = await this._accountRepository.GetAccountByCode(accountCode);
         if (account == null) return BaseBusiness.Error("Account is not exist!!");
 
         const result = await this._accountRepository.MarkNotificationRead({

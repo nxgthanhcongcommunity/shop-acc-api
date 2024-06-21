@@ -47,24 +47,14 @@ class AuthBusiness {
                 });
             }
 
-            const token = jwtUtils.generateToken({
-                id: createdAccount.id,
-                code: createdAccount.code,
-                familyName: createdAccount.familyName,
-                givenName: createdAccount.givenName,
-                email: createdAccount.email,
-                photo: createdAccount.photo,
-                role: ROLES.MEMBER,
-            });
+            const payload = {
+                accountCode: createdAccount.code,
+                roles: [ROLES.MEMBER],
+            };
 
+            const token = jwtUtils.generateToken(payload);
             const refreshToken = jwtUtils.generateRefreshToken({
-                id: createdAccount.id,
-                code: createdAccount.code,
-                familyName: createdAccount.familyName,
-                givenName: createdAccount.givenName,
-                email: createdAccount.email,
-                photo: createdAccount.photo,
-                role: ROLES.MEMBER,
+                accountCode: createdAccount.code,
             });
 
             return BaseBusiness.Success({
@@ -81,37 +71,24 @@ class AuthBusiness {
         try {
             const { refreshToken } = req.body;
             if (!refreshToken)
-                return BaseBusiness.ClientError("p:refreshToken not found!!");
+                return BaseBusiness.ClientError("RefreshToken không được để trống!!");
 
             const decoded = jwtUtils.verifyRefreshToken(refreshToken);
             if (decoded == null)
-                return BaseBusiness.ClientError("RefreshToken not valid!!");
+                return BaseBusiness.ClientError("RefreshToken không hợp lệ!!");
 
-            const account = decoded.account;
+            const account = await this._accountRepository.GetAccountByCode(decoded.accountCode);
+            if (account == null) return BaseBusiness.ClientError("Tài khoản không tồn tại!!")
 
-            const newToken = jwtUtils.generateToken({
-                id: account.id,
-                code: account.code,
-                familyName: account.familyName,
-                givenName: account.givenName,
-                email: account.email,
-                photo: account.photo,
-                role: ROLES.MEMBER,
-            });
-
-            const newRefreshToken = jwtUtils.generateRefreshToken({
-                id: account.id,
-                code: account.code,
-                familyName: account.familyName,
-                givenName: account.givenName,
-                email: account.email,
-                photo: account.photo,
-                role: ROLES.MEMBER,
-            });
+            const payload = {
+                accountCode: account.code,
+                roles: [ROLES.MEMBER],
+            };
             return BaseBusiness.Success({
-                token: newToken,
-                refreshToken: newRefreshToken,
-                role: ROLES.MEMBER,
+                token: jwtUtils.generateToken(payload),
+                refreshToken: jwtUtils.generateRefreshToken({
+                    accountCode: account.code,
+                }),
             });
 
         } catch (ex) {
@@ -122,28 +99,15 @@ class AuthBusiness {
 
     LoginAsync = async (req) => {
 
-        const account = await this._accountRepository.GetAccountByCode({
-            accountCode: "USR-QDGVLE",
-        })
+        const account = await this._accountRepository.GetAccountByCode("USR-QDGVLE");
+        const payload = {
+            accountCode: account.code,
+            roles: [ROLES.MEMBER],
+        };
 
-        const token = jwtUtils.generateToken({
-            id: account.id,
-            code: account.code,
-            familyName: account.familyName,
-            givenName: account.givenName,
-            email: account.email,
-            photo: account.photo,
-            role: ROLES.MEMBER,
-        });
-
+        const token = jwtUtils.generateToken(payload);
         const refreshToken = jwtUtils.generateRefreshToken({
-            id: account.id,
-            code: account.code,
-            familyName: account.familyName,
-            givenName: account.givenName,
-            email: account.email,
-            photo: account.photo,
-            role: ROLES.MEMBER,
+            accountCode: account.code,
         });
 
         return BaseBusiness.Success({

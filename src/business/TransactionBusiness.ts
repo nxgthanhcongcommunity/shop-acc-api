@@ -10,9 +10,7 @@ class TransactionBusiness {
         try {
             const { accountCode } = req.query;
 
-            const account = await this._accountRepository.GetAccountByCode({
-                accountCode,
-            })
+            const account = await this._accountRepository.GetAccountByCode(accountCode)
             if (account == null) return BaseBusiness.ClientError("Account not found!!");
 
             const records = await this._transactionRepository.GetTransactionHistoryAsync({
