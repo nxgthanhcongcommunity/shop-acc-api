@@ -25,7 +25,9 @@ class InvoiceBusiness {
     try {
       const { invoice, invoiceDetails }: ICreateReq = req.body;
 
-      const account = await this._accountRepository.GetAccountByCode(invoice.accountCode);
+      const account = await this._accountRepository.GetAccountByCodeAsync(
+        invoice.accountCode
+      );
       if (account == null) return BaseBusiness.Error("Account do not exist!!");
 
       const createdInvoice = await this._invoiceRepository.CreateInvoice({
@@ -150,29 +152,31 @@ class InvoiceBusiness {
 
   GetPurchaseHistoryAsync = async (req) => {
     try {
-
       const { accountCode } = req.query;
       if (validateUtils.isEmpty([accountCode])) {
         return BaseBusiness.ClientError("Mã tài khoản không được để trống!!");
       }
 
-      const account = await this._accountRepository.GetAccountByCode(accountCode);
-      if (account == null) return BaseBusiness.ClientError("User không tồn tại trong hệ thống!!");
+      const account = await this._accountRepository.GetAccountByCodeAsync(
+        accountCode
+      );
+      if (account == null)
+        return BaseBusiness.ClientError("User không tồn tại trong hệ thống!!");
 
-      const records = await this._invoiceRepository.GetInvoicesByAccountIdAsync(account.id);
+      const records = await this._invoiceRepository.GetInvoicesByAccountIdAsync(
+        account.id
+      );
       const total = records.length;
 
       return BaseBusiness.Success({
         total,
         records,
-      })
-
+      });
     } catch (ex) {
       logUtils.logError(ex);
       return BaseBusiness.Error();
     }
   };
-
 }
 
 export default InvoiceBusiness;

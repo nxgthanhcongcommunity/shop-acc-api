@@ -1,26 +1,14 @@
-import { Includeable, Optional } from "sequelize";
-import { AccountModel, BalanceModel, NotificationModel } from "../models";
-import { NullishPropertiesOf } from "sequelize/types/utils";
 import { IAccountCreationAttributes } from "models/accountModel";
-
-export interface IGetAllReq {
-  page: number;
-  limit: number;
-  include?: Includeable[];
-}
-
-export interface IGetBalanceByAccountCodeReq {
-  accountCode: string;
-}
-
-export interface IGetNotificationsByAccountCodeReq {
-  accountCode: string;
-}
+import { Includeable, Optional } from "sequelize";
+import { NullishPropertiesOf } from "sequelize/types/utils";
+import { AccountModel, BalanceModel, NotificationModel } from "../models";
 
 class AccountRepository {
-  GetAll = async (req: IGetAllReq) => {
-    const { page, limit, include = [BalanceModel] } = req;
-
+  GetAllAccountsAsync = async (
+    page: number,
+    limit: number,
+    include: Includeable[]
+  ) => {
     const records = await AccountModel.findAll({
       offset: page > 0 ? (page - 1) * limit : null,
       limit: limit > 0 ? limit : null,
@@ -31,13 +19,11 @@ class AccountRepository {
     return records;
   };
 
-  CountAll = async () => {
+  CountAllAsync = async () => {
     return await AccountModel.count();
   };
 
-  GetBalanceByAccountCode = async (req: IGetBalanceByAccountCodeReq) => {
-    const { accountCode } = req;
-
+  GetAccountBalanceByCodeAsync = async (accountCode: string) => {
     const record = await AccountModel.findOne({
       where: {
         code: accountCode,
@@ -48,11 +34,7 @@ class AccountRepository {
     return record;
   };
 
-  GetNotificationsByAccountCode = async (
-    req: IGetNotificationsByAccountCodeReq
-  ) => {
-    const { accountCode } = req;
-
+  GetNotificationsByAccountCodeAsync = async (accountCode: string) => {
     const record = await AccountModel.findOne({
       where: {
         code: accountCode,
@@ -93,7 +75,19 @@ class AccountRepository {
     return true;
   };
 
-  GetAccountByCode = async (accountCode: string) => {
+  MarkNotificationReadByCodeAsync = async (notificationCode: string) => {
+    await NotificationModel.update(
+      {
+        isViewed: true,
+      },
+      {
+        where: { code: notificationCode },
+      }
+    );
+    return true;
+  };
+
+  GetAccountByCodeAsync = async (accountCode: string) => {
     const record = await AccountModel.findOne({
       where: {
         code: accountCode,

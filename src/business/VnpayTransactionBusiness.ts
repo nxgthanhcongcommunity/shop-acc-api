@@ -32,7 +32,9 @@ class VnpayTransactionBusiness {
         req.connection.socket.remoteAddress;
       const { bankCode, amount, accountCode } = req.body;
 
-      const account = await this._accountRepository.GetAccountByCode(accountCode);
+      const account = await this._accountRepository.GetAccountByCodeAsync(
+        accountCode
+      );
       if (account == null) {
         return BaseBusiness.Error("Account not found!");
       }
@@ -172,9 +174,11 @@ class VnpayTransactionBusiness {
         });
       }
 
-      const transaction = await this._transactionRepository.GetTransactionByRef({
-        refNo: vnp_Params["vnp_TxnRef"],
-      });
+      const transaction = await this._transactionRepository.GetTransactionByRef(
+        {
+          refNo: vnp_Params["vnp_TxnRef"],
+        }
+      );
       if (transaction != null) {
         return BaseBusiness.Success({
           RspCode: "02",

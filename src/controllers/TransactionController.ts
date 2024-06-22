@@ -3,7 +3,6 @@ import { RequestHandler } from "../utils";
 import BaseController from "./BaseController";
 
 class TransactionController extends BaseController {
-
   _transactionBusiness = new TransactionBusiness();
 
   async Get(req, res) {
@@ -46,8 +45,9 @@ class TransactionController extends BaseController {
   }
 
   GetTransactionHistoryAsync = async (req, res) =>
-    this.ProcessAsync(res, () => this._transactionBusiness.GetTransactionHistoryAsync(req));
-
+    this.ProcessAsync(req, res, () =>
+      this._transactionBusiness.GetTransactionHistoryAsync(req)
+    );
 }
 
 export default new TransactionController();

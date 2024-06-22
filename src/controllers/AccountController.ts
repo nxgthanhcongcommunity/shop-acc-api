@@ -2,24 +2,37 @@ import { AccountBusiness } from "../business";
 import BaseController from "./BaseController";
 
 class AccountController extends BaseController {
-
   _accountBusiness = new AccountBusiness();
 
-  GetAccounts = async (req, res) =>
-    this.ProcessAsync(res, () => this._accountBusiness.GetAccounts(req));
+  GetAllAccountsAsync = async (req, res) =>
+    this.ProcessAsync(req, res, () =>
+      this._accountBusiness.GetAllAccountsAsync(req)
+    );
 
-  GetAccountByCode = async (req, res) =>
-    this.ProcessAsync(res, () => this._accountBusiness.GetAccountByCode(req));
+  GetAccountByCodeAsync = async (req, res) =>
+    this.ProcessAsync(req, res, () =>
+      this._accountBusiness.GetAccountByCodeAsync(req)
+    );
 
-  GetNotifications = async (req, res) =>
-    this.ProcessAsync(res, () => this._accountBusiness.GetNotifications(req));
+  GetNotificationsByAccountCodeAsync = async (req, res) =>
+    this.ProcessAsync(req, res, () =>
+      this._accountBusiness.GetNotificationsByAccountCodeAsync(req)
+    );
 
-  GetAccountBalanceByCode = async (req, res) =>
-    this.ProcessAsync(res, () => this._accountBusiness.GetAccountBalanceByCode(req));
+  GetAccountBalanceByCodeAsync = async (req, res) =>
+    this.ProcessAsync(req, res, () =>
+      this._accountBusiness.GetAccountBalanceByCodeAsync(req)
+    );
 
-  MarkNotificationsRead = async (req, res) =>
-    this.ProcessAsync(res, () => this._accountBusiness.MarkNotificationsRead(req));
+  MarkNotificationsReadByAccountCodeAsync = async (req, res) =>
+    this.ProcessAsync(req, res, () =>
+      this._accountBusiness.MarkNotificationsReadByAccountCodeAsync(req)
+    );
 
+  MarkNotificationReadByCodeAsync = async (req, res) =>
+    this.ProcessAsync(req, res, () =>
+      this._accountBusiness.MarkNotificationReadByCodeAsync(req)
+    );
 }
 
 export default AccountController;

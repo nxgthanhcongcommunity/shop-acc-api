@@ -2,14 +2,46 @@ import * as express from "express";
 import { verifyTokenMiddleware } from "../../middlewares";
 import { ROLES } from "../../constants";
 import { AccountController } from "../../controllers";
+import { AccountValidator } from "../../validators";
 const router = express.Router();
 const accountController = new AccountController();
+const accountValidator = new AccountValidator();
 
-router.get("/get-accounts", verifyTokenMiddleware(ROLES.ADMIN), accountController.GetAccounts);
-router.get("/get-account-by-code", verifyTokenMiddleware(ROLES.MEMBER), accountController.GetAccountByCode);
+router.get(
+  "/get-all-accounts",
+  verifyTokenMiddleware(ROLES.ADMIN),
+  accountController.GetAllAccountsAsync
+);
+router.get(
+  "/get-account-by-code",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  accountValidator.GetAccountByCodeAsync,
+  accountController.GetAccountByCodeAsync
+);
 
-router.get("/get-notifications", verifyTokenMiddleware(ROLES.MEMBER), accountController.GetNotifications);
-router.post("/mark-notifications-read", verifyTokenMiddleware(ROLES.MEMBER), accountController.MarkNotificationsRead);
-router.get("/get-account-balance-by-code", verifyTokenMiddleware(ROLES.MEMBER), accountController.GetAccountBalanceByCode);
+router.get(
+  "/get-notifications",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  accountValidator.GetNotificationsByAccountCodeAsync,
+  accountController.GetNotificationsByAccountCodeAsync
+);
+router.post(
+  "/mark-notification-read-by-code",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  accountValidator.MarkNotificationReadByCodeAsync,
+  accountController.MarkNotificationReadByCodeAsync
+);
+router.post(
+  "/mark-notifications-read-by-account-code",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  accountValidator.MarkNotificationsReadByAccountCodeAsync,
+  accountController.MarkNotificationsReadByAccountCodeAsync
+);
+router.get(
+  "/get-account-balance-by-code",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  accountValidator.GetAccountByCodeAsync,
+  accountController.GetAccountBalanceByCodeAsync
+);
 
 export default router;
