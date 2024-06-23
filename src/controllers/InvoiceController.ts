@@ -26,4 +26,4 @@ class InvoiceController extends BaseController {
     );
 }
 
-export default new InvoiceController();
+export default InvoiceController;

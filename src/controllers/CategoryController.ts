@@ -1,4 +1,4 @@
-import { Op, QueryTypes, Sequelize, where } from "sequelize";
+import { Op } from "sequelize";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
 import BaseController from "./BaseController";

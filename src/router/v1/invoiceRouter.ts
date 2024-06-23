@@ -2,12 +2,39 @@ import * as express from "express";
 import { InvoiceController } from "../../controllers";
 import { verifyTokenMiddleware } from "../../middlewares";
 import { ROLES } from "../../constants";
+import { InvoiceValidator } from "../../validators";
 const router = express.Router();
 
-router.post("/create", verifyTokenMiddleware(ROLES.MEMBER), InvoiceController.Create);
-router.get("/get", verifyTokenMiddleware(ROLES.ADMIN), InvoiceController.GetAll);
-router.get("/get-invoice-by-code", verifyTokenMiddleware(ROLES.MEMBER), InvoiceController.GetInvoiceByCode);
-router.get("/get-invoice-details", verifyTokenMiddleware(ROLES.ADMIN), InvoiceController.GetInvoiceDetails);
-router.get("/get-purchase-history", InvoiceController.GetPurchaseHistoryAsync); //verifyTokenMiddleware(ROLES.MEMBER),
+const invoiceValidator = new InvoiceValidator();
+const invoiceController = new InvoiceController();
+
+router.post(
+  "/create",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  invoiceValidator.CreateAsync,
+  invoiceController.Create
+);
+router.get(
+  "/get",
+  verifyTokenMiddleware(ROLES.ADMIN),
+  invoiceController.GetAll
+);
+router.get(
+  "/get-invoice-by-code",
+  verifyTokenMiddleware(ROLES.MEMBER),
+  invoiceValidator.GetInvoiceByCodeAsync,
+  invoiceController.GetInvoiceByCode
+);
+router.get(
+  "/get-invoice-details",
+  verifyTokenMiddleware(ROLES.ADMIN),
+  invoiceValidator.GetInvoiceDetailsAsync,
+  invoiceController.GetInvoiceDetails
+);
+router.get(
+  "/get-purchase-history",
+  invoiceValidator.GetPurchaseHistoryAsync,
+  invoiceController.GetPurchaseHistoryAsync
+);
 
 export default router;

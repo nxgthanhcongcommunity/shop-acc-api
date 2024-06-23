@@ -22,6 +22,8 @@ class InvoiceBusiness {
   _accountRepository = new AccountRepository();
 
   Create = async (req) => {
+    return BaseBusiness.Error();
+
     try {
       const { invoice, invoiceDetails }: ICreateReq = req.body;
 
@@ -131,10 +133,10 @@ class InvoiceBusiness {
 
   GetInvoiceByCode = async (req) => {
     try {
-      const { code } = req.query;
+      const { invoiceCode } = req.query;
 
       const record = await this._invoiceRepository.GetInvoiceByCode({
-        code,
+        code: invoiceCode,
         include: [
           {
             model: InvoiceDetailModel,
@@ -153,9 +155,6 @@ class InvoiceBusiness {
   GetPurchaseHistoryAsync = async (req) => {
     try {
       const { accountCode } = req.query;
-      if (validateUtils.isEmpty([accountCode])) {
-        return BaseBusiness.ClientError("Mã tài khoản không được để trống!!");
-      }
 
       const account = await this._accountRepository.GetAccountByCodeAsync(
         accountCode
