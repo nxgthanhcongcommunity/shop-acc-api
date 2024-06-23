@@ -1,26 +1,19 @@
-import { IGetUserInfoFromGoogleReq } from "repositories/AuthRepository";
 import { ROLES } from "../constants";
-import { IHandleGoggleLoginAsyncResponse, IResponse } from "../interfaces";
 import { BalanceModel } from "../models";
 import { AccountRepository, AuthRepository } from "../repositories";
-import utils, { jwtUtils, logUtils, validateUtils } from "../utils";
+import utils, { jwtUtils, logUtils } from "../utils";
 import BaseBusiness from "./BaseBusiness";
 
 class AuthBusiness {
   _authRepository = new AuthRepository();
   _accountRepository = new AccountRepository();
 
-  HandleGoggleLoginAsync = async (
-    req
-  ): Promise<IResponse<IHandleGoggleLoginAsyncResponse>> => {
+  HandleGoggleLoginAsync = async (req) => {
     try {
-      const reqModel: IGetUserInfoFromGoogleReq = req.body;
-      if (validateUtils.isEmpty[reqModel.access_token]) {
-        return BaseBusiness.ClientError("access_token is required!!");
-      }
+      const { accessToken } = req.body;
 
       const googleResponse = await this._authRepository.GetUserInfoFromGoogle(
-        reqModel
+        accessToken
       );
       const userInfo = googleResponse.data;
 
@@ -71,8 +64,6 @@ class AuthBusiness {
   RefreshTokenAsync = async (req) => {
     try {
       const { refreshToken } = req.body;
-      if (!refreshToken)
-        return BaseBusiness.ClientError("RefreshToken không được để trống!!");
 
       const decoded = jwtUtils.verifyRefreshToken(refreshToken);
       if (decoded == null)

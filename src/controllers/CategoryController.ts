@@ -1,8 +1,9 @@
 import { Op, QueryTypes, Sequelize, where } from "sequelize";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
+import BaseController from "./BaseController";
 
-class CategoryController {
+class CategoryController extends BaseController {
   async GetCategories(req, res) {
     try {
       const { page, limit, name = "" } = req.query;
@@ -27,136 +28,119 @@ class CategoryController {
       RequestHandler.sendError(res);
     }
   }
-  async AddCategory(req, res) {
-    try {
-      const category = req.body;
-
-      if (
-        category == null ||
-        ("" + category.name).length === 0 ||
-        ("" + category.bannerCode).length === 0
-      ) {
-        RequestHandler.sendClientError(res, "invalid input");
-        return;
-      }
-
-      category.code = `CA-${utils.generateUniqueString(6)}`;
-
-      const categoryObj = await CategoryModel.create(category);
-      await categoryObj.save();
-
-      RequestHandler.sendSucceed(res);
-    } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
-    }
-  }
-
-  async UpdateCategory(req, res) {
-    try {
-      const category = req.body;
-
-      if (
-        category == null ||
-        ("" + category.name).length === 0 ||
-        ("" + category.code).length === 0 ||
-        ("" + category.bannerCode).length === 0
-      ) {
-        RequestHandler.sendClientError(res, "invalid input");
-        return;
-      }
-
-      await CategoryModel.update(category, {
-        where: {
-          id: category.id,
-        },
-      });
-
-      RequestHandler.sendSucceed(res);
-    } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
-    }
-  }
-
-  async DeleteCategory(req, res) {
-    try {
-      const category = req.body;
-
-      if (
-        category == null ||
-        ("" + category.name).length === 0 ||
-        ("" + category.code).length === 0
-      ) {
-        RequestHandler.sendClientError(res, "invalid input");
-        return;
-      }
-
-      await CategoryModel.destroy({
-        where: {
-          id: category.id,
-        },
-      });
-
-      await ProductModel.destroy({
-        where: {
-          categoryId: category.id,
-        },
-      });
-
-      RequestHandler.sendSucceed(res);
-    } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
-    }
-  }
-
-  async GetCategoriesByBannerCode(req, res) {
-    try {
-      const { code: bannerCode } = req.query;
-
-      const records = await CategoryModel.findAll({
-        where: {
-          bannerCode: bannerCode,
-        },
-        include: [
-          {
-            model: ProductModel,
-            include: [QuantityModel],
-          }
-        ],
-      });
-
-      RequestHandler.sendSucceed(res, records);
-    } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
-    }
-  }
-
-  async GetCategoryByCode(req, res) {
-    try {
-      const { code } = req.query;
-
-      const record = await CategoryModel.findOne({
-        where: {
+  AddCategory = async (req, res) => {
+    this.ProcessAsync(req, res, async () => {
+      try {
+        const { name, bannerCode, mainFileCLDId } = req.body;
+        const code = `CA-${utils.generateUniqueString(6)}`;
+        await CategoryModel.create({
+          name,
+          bannerCode,
+          mainFileCLDId,
           code,
-        },
-        include: [
+        });
+
+        RequestHandler.sendSucceed(res);
+      } catch (err) {
+        console.log(err);
+        RequestHandler.sendError(res);
+      }
+    });
+  };
+
+  UpdateCategory = async (req, res) => {
+    this.ProcessAsync(req, res, async () => {
+      try {
+        const { id, name, bannerCode, mainFileCLDId } = req.body;
+        await CategoryModel.update(
           {
-            model: ProductModel,
-            include: [QuantityModel],
+            name,
+            bannerCode,
+            mainFileCLDId,
+          },
+          {
+            where: {
+              id,
+            },
           }
-        ],
-      });
+        );
 
-      RequestHandler.sendSucceed(res, record);
-    } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
-    }
-  }
+        RequestHandler.sendSucceed(res);
+      } catch (err) {
+        console.log(err);
+        RequestHandler.sendError(res);
+      }
+    });
+  };
 
+  DeleteCategory = async (req, res) => {
+    this.ProcessAsync(req, res, async () => {
+      try {
+        const { id } = req.body;
+
+        await CategoryModel.destroy({
+          where: {
+            id,
+          },
+        });
+
+        RequestHandler.sendSucceed(res);
+      } catch (err) {
+        console.log(err);
+        RequestHandler.sendError(res);
+      }
+    });
+  };
+
+  GetCategoriesByBannerCode = async (req, res) => {
+    this.ProcessAsync(req, res, async () => {
+      try {
+        const { bannerCode } = req.query;
+
+        const records = await CategoryModel.findAll({
+          where: {
+            bannerCode,
+          },
+          include: [
+            {
+              model: ProductModel,
+              include: [QuantityModel],
+            },
+          ],
+        });
+
+        RequestHandler.sendSucceed(res, records);
+      } catch (err) {
+        console.log(err);
+        RequestHandler.sendError(res);
+      }
+    });
+  };
+
+  GetCategoryByCode = async (req, res) => {
+    this.ProcessAsync(req, res, async () => {
+      try {
+        const { categoryCode } = req.query;
+
+        const record = await CategoryModel.findOne({
+          where: {
+            code: categoryCode,
+          },
+          include: [
+            {
+              model: ProductModel,
+              include: [QuantityModel],
+            },
+          ],
+        });
+
+        RequestHandler.sendSucceed(res, record);
+      } catch (err) {
+        console.log(err);
+        RequestHandler.sendError(res);
+      }
+    });
+  };
 }
 
-export default new CategoryController();
+export default CategoryController;
