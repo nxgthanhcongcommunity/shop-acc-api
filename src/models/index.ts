@@ -16,13 +16,25 @@ import "dotenv/config";
 
 const { RESET_DATABASE } = process.env;
 
-export const sequelize = new Sequelize("shop-acc", "postgres", "qqq111!!!", {
-  host: "localhost",
-  // host: "10.253.2.18",
-  port: 5432,
-  dialect: "postgres",
-  logging: false,
-});
+export const sequelize = new Sequelize(
+  "shop-acc",
+  "postgres",
+  "mysecretpassword",
+  {
+    host: "postgres-db",
+    port: 5432,
+    dialect: "postgres",
+    logging: false,
+  }
+);
+
+// export const sequelize = new Sequelize("shop-acc", "postgres", "mysecretpassword", {
+//   host: "localhost",
+//   // host: "10.253.2.18",
+//   port: 5432,
+//   dialect: "postgres",
+//   logging: false,
+// });
 
 sequelize.addModels([
   ProductModel,
