@@ -28,7 +28,6 @@ router.get(
 router.get(
   "/get-invoice-details",
   verifyTokenMiddleware(ROLES.ADMIN),
-  invoiceValidator.GetInvoiceDetailsAsync,
   invoiceController.GetInvoiceDetails
 );
 router.get(

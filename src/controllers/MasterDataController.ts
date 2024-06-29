@@ -1,11 +1,12 @@
+import BaseBusiness from "../business/BaseBusiness";
 import utils, { RequestHandler } from "../utils";
+import BaseController from "./BaseController";
 
-class MasterDataController {
-  async GetByKey(req, res) {
-    try {
-      const data = {
-        logoUrl:
-          "shop-acc/dragon_ball_legends_2nd_anniversary_logo_by_maxiuchiha22_ddyaofk-fullview.png_nbtixv",
+class MasterDataController extends BaseController {
+  GetByKey = async (req, res) =>
+    await this.ProcessAsync(req, res, () =>
+      BaseBusiness.Success({
+        logoUrl: "logo_mhwxka",
         shopName: "",
         menuItems: [
           {
@@ -97,13 +98,8 @@ class MasterDataController {
             tag: "Best seller",
           },
         ],
-      };
-
-      RequestHandler.sendSucceed(res, data);
-    } catch (ex) {
-      RequestHandler.sendError(res);
-    }
-  }
+      })
+    );
 }
 
 export default new MasterDataController();

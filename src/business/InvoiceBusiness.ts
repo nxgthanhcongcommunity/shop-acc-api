@@ -22,8 +22,6 @@ class InvoiceBusiness {
   _accountRepository = new AccountRepository();
 
   Create = async (req) => {
-    return BaseBusiness.Error();
-
     try {
       const { invoice, invoiceDetails }: ICreateReq = req.body;
 
@@ -96,16 +94,14 @@ class InvoiceBusiness {
 
       return BaseBusiness.Success({ records, total });
     } catch (ex) {
-      console.log(ex);
       return BaseBusiness.Error();
     }
   };
 
   GetInvoiceDetails = async (req) => {
     try {
-      const { invoiceCode } = req.query;
-
-      return BaseBusiness.Success({ records: [], total: 0 });
+      const records = await this._invoiceRepository.GetAllInvoiceDetails({});
+      return BaseBusiness.Success({ records, total: 0 });
     } catch (ex) {
       console.log(ex);
       return BaseBusiness.Error();

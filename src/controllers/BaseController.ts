@@ -4,16 +4,21 @@ import BaseBusiness from "../business/BaseBusiness";
 
 class BaseController {
   ProcessAsync = async (req, res, cb) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      RequestHandler.send(
-        res,
-        BaseBusiness.Success({ errors: errors.array() })
-      );
-      return;
-    }
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return RequestHandler.send(
+          res,
+          BaseBusiness.Success({ errors: errors.array() })
+        );
+      }
 
-    RequestHandler.send(res, await cb());
+      const result = await cb();
+      return RequestHandler.send(res, result);
+    } catch (err) {
+      console.log(err);
+      return RequestHandler.sendError(res, "server error");
+    }
   };
 }
 

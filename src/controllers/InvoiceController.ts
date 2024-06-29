@@ -5,23 +5,23 @@ class InvoiceController extends BaseController {
   _invoiceBusiness = new InvoiceBusiness();
 
   Create = async (req, res) =>
-    this.ProcessAsync(req, res, () => this._invoiceBusiness.Create(req));
+    await this.ProcessAsync(req, res, () => this._invoiceBusiness.Create(req));
 
   GetAll = async (req, res) =>
-    this.ProcessAsync(req, res, () => this._invoiceBusiness.GetAll(req));
+    await this.ProcessAsync(req, res, () => this._invoiceBusiness.GetAll(req));
 
   GetInvoiceDetails = async (req, res) =>
-    this.ProcessAsync(req, res, () =>
+    await this.ProcessAsync(req, res, () =>
       this._invoiceBusiness.GetInvoiceDetails(req)
     );
 
   GetInvoiceByCode = async (req, res) =>
-    this.ProcessAsync(req, res, () =>
+    await this.ProcessAsync(req, res, () =>
       this._invoiceBusiness.GetInvoiceByCode(req)
     );
 
   GetPurchaseHistoryAsync = async (req, res) =>
-    this.ProcessAsync(req, res, () =>
+    await this.ProcessAsync(req, res, () =>
       this._invoiceBusiness.GetPurchaseHistoryAsync(req)
     );
 }

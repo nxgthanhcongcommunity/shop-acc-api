@@ -2,10 +2,11 @@ import { Op } from "sequelize";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
 import BaseController from "./BaseController";
+import BaseBusiness from "../business/BaseBusiness";
 
 class CategoryController extends BaseController {
-  async GetCategories(req, res) {
-    try {
+  GetCategories = async (req, res) => {
+    await this.ProcessAsync(req, res, async () => {
       const { page, limit, name = "" } = req.query;
 
       const data = await CategoryModel.findAll({
@@ -21,124 +22,92 @@ class CategoryController extends BaseController {
       });
 
       const total = await CategoryModel.count();
-
-      RequestHandler.sendSucceed(res, { total, data });
-    } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
-    }
-  }
+      return BaseBusiness.Success({ total, data });
+    });
+  };
   AddCategory = async (req, res) => {
-    this.ProcessAsync(req, res, async () => {
-      try {
-        const { name, bannerCode, mainFileCLDId } = req.body;
-        const code = `CA-${utils.generateUniqueString(6)}`;
-        await CategoryModel.create({
-          name,
-          bannerCode,
-          mainFileCLDId,
-          code,
-        });
-
-        RequestHandler.sendSucceed(res);
-      } catch (err) {
-        console.log(err);
-        RequestHandler.sendError(res);
-      }
+    await this.ProcessAsync(req, res, async () => {
+      const { name, bannerCode, mainFileCLDId } = req.body;
+      const code = `CA-${utils.generateUniqueString(6)}`;
+      await CategoryModel.create({
+        name,
+        bannerCode,
+        mainFileCLDId,
+        code,
+      });
+      return BaseBusiness.Success(true);
     });
   };
 
   UpdateCategory = async (req, res) => {
-    this.ProcessAsync(req, res, async () => {
-      try {
-        const { id, name, bannerCode, mainFileCLDId } = req.body;
-        await CategoryModel.update(
-          {
-            name,
-            bannerCode,
-            mainFileCLDId,
+    await this.ProcessAsync(req, res, async () => {
+      const { id, name, bannerCode, mainFileCLDId } = req.body;
+      await CategoryModel.update(
+        {
+          name,
+          bannerCode,
+          mainFileCLDId,
+        },
+        {
+          where: {
+            id,
           },
-          {
-            where: {
-              id,
-            },
-          }
-        );
-
-        RequestHandler.sendSucceed(res);
-      } catch (err) {
-        console.log(err);
-        RequestHandler.sendError(res);
-      }
+        }
+      );
+      return BaseBusiness.Success(true);
     });
   };
 
   DeleteCategory = async (req, res) => {
-    this.ProcessAsync(req, res, async () => {
-      try {
-        const { id } = req.body;
+    await this.ProcessAsync(req, res, async () => {
+      const { id } = req.body;
 
-        await CategoryModel.destroy({
-          where: {
-            id,
-          },
-        });
+      await CategoryModel.destroy({
+        where: {
+          id,
+        },
+      });
 
-        RequestHandler.sendSucceed(res);
-      } catch (err) {
-        console.log(err);
-        RequestHandler.sendError(res);
-      }
+      return BaseBusiness.Success(true);
     });
   };
 
   GetCategoriesByBannerCode = async (req, res) => {
-    this.ProcessAsync(req, res, async () => {
-      try {
-        const { bannerCode } = req.query;
+    await this.ProcessAsync(req, res, async () => {
+      const { bannerCode } = req.query;
 
-        const records = await CategoryModel.findAll({
-          where: {
-            bannerCode,
+      const records = await CategoryModel.findAll({
+        where: {
+          bannerCode,
+        },
+        include: [
+          {
+            model: ProductModel,
+            include: [QuantityModel],
           },
-          include: [
-            {
-              model: ProductModel,
-              include: [QuantityModel],
-            },
-          ],
-        });
+        ],
+      });
 
-        RequestHandler.sendSucceed(res, records);
-      } catch (err) {
-        console.log(err);
-        RequestHandler.sendError(res);
-      }
+      return BaseBusiness.Success(records);
     });
   };
 
   GetCategoryByCode = async (req, res) => {
-    this.ProcessAsync(req, res, async () => {
-      try {
-        const { categoryCode } = req.query;
+    await this.ProcessAsync(req, res, async () => {
+      const { categoryCode } = req.query;
 
-        const record = await CategoryModel.findOne({
-          where: {
-            code: categoryCode,
+      const record = await CategoryModel.findOne({
+        where: {
+          code: categoryCode,
+        },
+        include: [
+          {
+            model: ProductModel,
+            include: [QuantityModel],
           },
-          include: [
-            {
-              model: ProductModel,
-              include: [QuantityModel],
-            },
-          ],
-        });
-
-        RequestHandler.sendSucceed(res, record);
-      } catch (err) {
-        console.log(err);
-        RequestHandler.sendError(res);
-      }
+        ],
+      });
+      return BaseBusiness.Success(record);
     });
   };
 }
