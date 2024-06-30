@@ -1,3 +1,4 @@
+import { TransactionModel } from "../models";
 import { AccountRepository, TransactionRepository } from "../repositories";
 import BaseBusiness from "./BaseBusiness";
 
@@ -20,6 +21,18 @@ class TransactionBusiness {
           accountId: account.id,
         });
       return BaseBusiness.Success(records);
+    } catch (ex) {
+      console.log(ex);
+      return BaseBusiness.Error();
+    }
+  };
+
+  GetAllTransactions = async (req) => {
+    try {
+      const records = await TransactionModel.findAll({
+        order: [["createdAt", "desc"]],
+      });
+      return BaseBusiness.Success({ total: 0, records });
     } catch (ex) {
       console.log(ex);
       return BaseBusiness.Error();

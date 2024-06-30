@@ -1,61 +1,26 @@
-import { Op } from "sequelize";
-import { CategoryModel, ProductModel, QuantityModel } from "../models";
-import utils, { RequestHandler } from "../utils";
-import BaseController from "./BaseController";
+import { CategoryBusiness } from "../business";
 import BaseBusiness from "../business/BaseBusiness";
+import { CategoryModel, ProductModel, QuantityModel } from "../models";
+import utils from "../utils";
+import BaseController from "./BaseController";
 
 class CategoryController extends BaseController {
-  GetCategories = async (req, res) => {
-    await this.ProcessAsync(req, res, async () => {
-      const { page, limit, name = "" } = req.query;
+  _categoryBusiness = new CategoryBusiness();
 
-      const data = await CategoryModel.findAll({
-        offset: page > 0 ? (page - 1) * limit : null,
-        limit: limit || null,
-        where: {
-          name: {
-            [Op.like]: `%${name}%`,
-          },
-        },
-        order: [["updatedAt", "DESC"]],
-        include: [ProductModel],
-      });
-
-      const total = await CategoryModel.count();
-      return BaseBusiness.Success({ total, data });
-    });
-  };
+  GetCategories = async (req, res) =>
+    await this.ProcessAsync(req, res, () =>
+      this._categoryBusiness.GetAllCategoriesAsync(req)
+    );
   AddCategory = async (req, res) => {
-    await this.ProcessAsync(req, res, async () => {
-      const { name, bannerCode, mainFileCLDId } = req.body;
-      const code = `CA-${utils.generateUniqueString(6)}`;
-      await CategoryModel.create({
-        name,
-        bannerCode,
-        mainFileCLDId,
-        code,
-      });
-      return BaseBusiness.Success(true);
-    });
+    await this.ProcessAsync(req, res, async () =>
+      this._categoryBusiness.AddCategory(req)
+    );
   };
 
   UpdateCategory = async (req, res) => {
-    await this.ProcessAsync(req, res, async () => {
-      const { id, name, bannerCode, mainFileCLDId } = req.body;
-      await CategoryModel.update(
-        {
-          name,
-          bannerCode,
-          mainFileCLDId,
-        },
-        {
-          where: {
-            id,
-          },
-        }
-      );
-      return BaseBusiness.Success(true);
-    });
+    await this.ProcessAsync(req, res, async () =>
+      this._categoryBusiness.UpdateCategory(req)
+    );
   };
 
   DeleteCategory = async (req, res) => {
