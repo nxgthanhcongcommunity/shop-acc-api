@@ -6,7 +6,7 @@ class MasterDataController extends BaseController {
   GetByKey = async (req, res) =>
     await this.ProcessAsync(req, res, () =>
       BaseBusiness.Success({
-        logoUrl: "logo_mhwxka",
+        logoUrl: "276_hggrf0",
         shopName: "",
         menuItems: [
           {
