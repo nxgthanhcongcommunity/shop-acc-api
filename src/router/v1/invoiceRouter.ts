@@ -16,7 +16,7 @@ router.post(
 );
 router.get(
   "/get",
-  verifyTokenMiddleware(ROLES.ADMIN),
+  verifyTokenMiddleware([ROLES.ADMIN]),
   invoiceController.GetAll
 );
 router.get(

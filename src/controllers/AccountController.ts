@@ -1,38 +1,143 @@
-import { AccountBusiness } from "../business";
+import { BalanceModel } from "../models";
 import BaseController from "./BaseController";
+import { AccountRepository } from "../repositories";
 
 class AccountController extends BaseController {
-  _accountBusiness = new AccountBusiness();
+  _accountRepository = new AccountRepository();
 
-  GetAllAccountsAsync = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._accountBusiness.GetAllAccountsAsync(req)
-    );
+  GetAllAccountsAsync = async (req, res) => {
+    try {
+      const { page, limit, include = [BalanceModel] } = req;
 
-  GetAccountByCodeAsync = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._accountBusiness.GetAccountByCodeAsync(req)
-    );
+      const records = await this._accountRepository.GetAllAccountsAsync(
+        page,
+        limit,
+        include
+      );
+      const total = await this._accountRepository.CountAllAsync();
 
-  GetNotificationsByAccountCodeAsync = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._accountBusiness.GetNotificationsByAccountCodeAsync(req)
-    );
+      return res.json({
+        succeed: true,
+        data: { records, total },
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
 
-  GetAccountBalanceByCodeAsync = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._accountBusiness.GetAccountBalanceByCodeAsync(req)
-    );
+  GetAccountByCodeAsync = async (req, res) => {
+    try {
+      const { accountCode } = req.query;
 
-  MarkNotificationsReadByAccountCodeAsync = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._accountBusiness.MarkNotificationsReadByAccountCodeAsync(req)
-    );
+      const record = await this._accountRepository.GetAccountByCodeAsync(
+        accountCode
+      );
 
-  MarkNotificationReadByCodeAsync = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._accountBusiness.MarkNotificationReadByCodeAsync(req)
-    );
+      return res.json({
+        succeed: true,
+        data: record,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
+
+  GetNotificationsByAccountCodeAsync = async (req, res) => {
+    try {
+      const { accountCode } = req.query;
+
+      const record =
+        await this._accountRepository.GetNotificationsByAccountCodeAsync(
+          accountCode
+        );
+
+      return res.json({
+        succeed: true,
+        data: record,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
+
+  GetAccountBalanceByCodeAsync = async (req, res) => {
+    try {
+      const { accountCode } = req.query;
+
+      const record = await this._accountRepository.GetAccountBalanceByCodeAsync(
+        accountCode
+      );
+
+      return res.json({
+        succeed: true,
+        data: record,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
+
+  MarkNotificationsReadByAccountCodeAsync = async (req, res) => {
+    try {
+      const { notificationCode } = req.body;
+      const result =
+        await this._accountRepository.MarkNotificationReadByCodeAsync(
+          notificationCode
+        );
+
+      return res.json({
+        succeed: true,
+        data: result,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
+
+  MarkNotificationReadByCodeAsync = async (req, res) => {
+    try {
+      const { accountCode } = req.body;
+
+      const account = await this._accountRepository.GetAccountByCodeAsync(
+        accountCode
+      );
+
+      if (account == null)
+        return res.json({
+          succeed: false,
+          message: "server error",
+        });
+
+      const result = await this._accountRepository.MarkNotificationRead({
+        accountId: account.id,
+      });
+
+      return res.json({
+        succeed: true,
+        data: result,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
 }
 
 export default AccountController;

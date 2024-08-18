@@ -1,30 +1,83 @@
-import { CategoryBusiness } from "../business";
-import BaseBusiness from "../business/BaseBusiness";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils from "../utils";
 import BaseController from "./BaseController";
 
 class CategoryController extends BaseController {
-  _categoryBusiness = new CategoryBusiness();
+  GetCategories = async (req, res) => {
+    try {
+      const { page, limit } = req.query;
 
-  GetCategories = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      this._categoryBusiness.GetAllCategoriesAsync(req)
-    );
+      const records = await CategoryModel.findAll({
+        offset: page > 0 ? (page - 1) * limit : null,
+        limit: limit || null,
+        order: [["updatedAt", "DESC"]],
+        include: [ProductModel],
+      });
+
+      const total = await CategoryModel.count();
+      return res.json({
+        succeed: true,
+        data: { total, records },
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
+
   AddCategory = async (req, res) => {
-    await this.ProcessAsync(req, res, async () =>
-      this._categoryBusiness.AddCategory(req)
-    );
+    try {
+      const { name, bannerCode, mainFileCLDId } = req.body;
+      const code = `CA-${utils.generateUniqueString(6)}`;
+      await CategoryModel.create({
+        name,
+        bannerCode,
+        mainFileCLDId,
+        code,
+      });
+      return res.json({
+        succeed: true,
+        data: true,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
   };
 
   UpdateCategory = async (req, res) => {
-    await this.ProcessAsync(req, res, async () =>
-      this._categoryBusiness.UpdateCategory(req)
-    );
+    try {
+      const { id, name, bannerCode, mainFileCLDId } = req.body;
+      await CategoryModel.update(
+        {
+          name,
+          bannerCode,
+          mainFileCLDId,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return res.json({
+        succeed: true,
+        data: true,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
   };
 
   DeleteCategory = async (req, res) => {
-    await this.ProcessAsync(req, res, async () => {
+    try {
       const { id } = req.body;
 
       await CategoryModel.destroy({
@@ -33,12 +86,20 @@ class CategoryController extends BaseController {
         },
       });
 
-      return BaseBusiness.Success(true);
-    });
+      return res.json({
+        succeed: true,
+        data: true,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
   };
 
   GetCategoriesByBannerCode = async (req, res) => {
-    await this.ProcessAsync(req, res, async () => {
+    try {
       const { bannerCode } = req.query;
 
       const records = await CategoryModel.findAll({
@@ -52,13 +113,20 @@ class CategoryController extends BaseController {
           },
         ],
       });
-
-      return BaseBusiness.Success(records);
-    });
+      return res.json({
+        succeed: true,
+        data: records,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
   };
 
   GetCategoryByCode = async (req, res) => {
-    await this.ProcessAsync(req, res, async () => {
+    try {
       const { categoryCode } = req.query;
 
       const record = await CategoryModel.findOne({
@@ -72,8 +140,16 @@ class CategoryController extends BaseController {
           },
         ],
       });
-      return BaseBusiness.Success(record);
-    });
+      return res.json({
+        succeed: true,
+        data: record,
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
   };
 }
 

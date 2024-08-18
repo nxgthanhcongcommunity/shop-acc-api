@@ -1,12 +1,12 @@
-import BaseBusiness from "../business/BaseBusiness";
-import utils, { RequestHandler } from "../utils";
+import utils from "../utils";
 import BaseController from "./BaseController";
 
 class MasterDataController extends BaseController {
-  GetByKey = async (req, res) =>
-    await this.ProcessAsync(req, res, () =>
-      BaseBusiness.Success({
-        logoUrl: "276_hggrf0",
+  GetByKey = async (req, res) => {
+    return res.json({
+      succeed: true,
+      data: {
+        logoUrl: "shop-acc/logoLyHuy_dckaud",
         shopName: "",
         menuItems: [
           {
@@ -97,9 +97,15 @@ class MasterDataController extends BaseController {
             code: "BN-MPIWVW",
             tag: "Best seller",
           },
+          {
+            name: "Tin tức",
+            code: "BN-CXBVX",
+            tag: "Best seller",
+          },
         ],
-      })
-    );
+      },
+    });
+  };
 }
 
 export default new MasterDataController();

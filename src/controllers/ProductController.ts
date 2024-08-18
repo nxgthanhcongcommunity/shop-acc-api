@@ -1,37 +1,75 @@
-import { Op, } from "sequelize";
+import { Op } from "sequelize";
 import { CategoryModel, ProductModel, QuantityModel } from "../models";
 import utils, { RequestHandler } from "../utils";
+import BaseController from "./BaseController";
 
-class ProductController {
+class ProductController extends BaseController {
+  GetProductsByKeysAsync = async (req, res) => {
+    try {
+      const { categoryCode } = req.query;
+
+      const category = await CategoryModel.findOne({
+        where: {
+          code: categoryCode,
+        },
+      });
+      if (category == null) {
+        return res.json({
+          succeed: false,
+          message: "server error",
+        });
+      }
+
+      const records = await ProductModel.findAll({
+        where: {
+          categoryId: category.id,
+        },
+        include: [QuantityModel],
+      });
+
+      return res.json({
+        succeed: true,
+        data: { records },
+      });
+    } catch (ex) {
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
+    }
+  };
+
   async GetProducts(req, res) {
     try {
       const { page, limit, name = "" } = req.query;
 
-      const data = await ProductModel.findAll({
+      const records = await ProductModel.findAll({
         offset: page > 0 ? (page - 1) * limit : null,
         limit: limit || null,
         where: {
           name: {
-            [Op.like]: `%${name}%`
+            [Op.like]: `%${name}%`,
           },
         },
         order: [["updatedAt", "DESC"]],
         include: [QuantityModel, CategoryModel],
-
       });
 
       const total = await ProductModel.count();
-
-      RequestHandler.sendSucceed(res, { total, data });
+      return res.json({
+        succeed: true,
+        data: { total, records },
+      });
     } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
     }
   }
 
   async AddProduct(req, res) {
     try {
-
       const product = req.body;
 
       const { quantity } = product;
@@ -44,10 +82,15 @@ class ProductController {
         currentQuantity: quantity.currentQuantity,
       });
 
-      RequestHandler.sendSucceed(res);
+      return res.json({
+        succeed: true,
+        data: null,
+      });
     } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
     }
   }
 
@@ -78,17 +121,20 @@ class ProductController {
         }
       );
 
-      await QuantityModel.update(quantity,
-        {
-          where: {
-            productId: quantity.productId,
-          },
-        }
-      )
-      RequestHandler.sendSucceed(res);
+      await QuantityModel.update(quantity, {
+        where: {
+          productId: quantity.productId,
+        },
+      });
+      return res.json({
+        succeed: true,
+        data: null,
+      });
     } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
     }
   }
 
@@ -97,8 +143,10 @@ class ProductController {
       const product = req.body;
 
       if (product == null) {
-        RequestHandler.sendClientError(res, "invalid input");
-        return;
+        return res.json({
+          succeed: false,
+          message: "server error",
+        });
       }
 
       await ProductModel.destroy({
@@ -107,18 +155,21 @@ class ProductController {
         },
       });
 
-      await QuantityModel.destroy(
-        {
-          where: {
-            productId: product.id,
-          },
-        }
-      )
+      await QuantityModel.destroy({
+        where: {
+          productId: product.id,
+        },
+      });
 
-      RequestHandler.sendSucceed(res);
+      return res.json({
+        succeed: true,
+        data: null,
+      });
     } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
     }
   }
 
@@ -135,7 +186,10 @@ class ProductController {
 
       const total = await ProductModel.count();
 
-      RequestHandler.sendSucceed(res, { total, data });
+      return res.json({
+        succeed: true,
+        data: { total, data },
+      });
     } catch (err) {
       console.log(err);
       RequestHandler.sendError(res);
@@ -157,13 +211,18 @@ class ProductController {
       const relatedProducts = await ProductModel.findAll({
         offset: 0,
         limit: 4,
-        include: [QuantityModel]
+        include: [QuantityModel],
       });
 
-      RequestHandler.sendSucceed(res, { product, relatedProducts });
+      return res.json({
+        succeed: true,
+        data: { product, relatedProducts },
+      });
     } catch (err) {
-      console.log(err);
-      RequestHandler.sendError(res);
+      return res.json({
+        succeed: false,
+        message: "server error",
+      });
     }
   }
 }

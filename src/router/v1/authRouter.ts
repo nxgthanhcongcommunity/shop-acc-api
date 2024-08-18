@@ -9,7 +9,6 @@ router.post(
   authValidator.HandleGoggleLoginAsync,
   AuthController.HandleGoggleLoginAsync
 );
-// router.post("/login", authValidator.LoginAsync, AuthController.LoginAsync);
 router.post(
   "/refresh",
   authValidator.RefreshTokenAsync,

@@ -9,7 +9,7 @@ const accountValidator = new AccountValidator();
 
 router.get(
   "/get-all-accounts",
-  verifyTokenMiddleware(ROLES.ADMIN),
+  verifyTokenMiddleware([ROLES.ADMIN]),
   accountController.GetAllAccountsAsync
 );
 router.get(
