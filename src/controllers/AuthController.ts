@@ -43,7 +43,7 @@ class AuthController extends BaseController {
 
       const roles =
         createdAccount.email == "nxgthanhcongcommunity@gmail.com"
-          ? [ROLES.ADMIN]
+          ? [ROLES.ADMIN, ROLES.MEMBER]
           : [ROLES.MEMBER];
 
       const payload = {

@@ -10,7 +10,7 @@ const invoiceController = new InvoiceController();
 
 router.post(
   "/create",
-  verifyTokenMiddleware(ROLES.MEMBER),
+  verifyTokenMiddleware([ROLES.MEMBER]),
   invoiceValidator.CreateAsync,
   invoiceController.Create
 );
@@ -21,13 +21,13 @@ router.get(
 );
 router.get(
   "/get-invoice-by-code",
-  verifyTokenMiddleware(ROLES.MEMBER),
+  verifyTokenMiddleware([ROLES.MEMBER]),
   invoiceValidator.GetInvoiceByCodeAsync,
   invoiceController.GetInvoiceByCode
 );
 router.get(
   "/get-invoice-details",
-  verifyTokenMiddleware(ROLES.ADMIN),
+  verifyTokenMiddleware([ROLES.ADMIN]),
   invoiceController.GetInvoiceDetails
 );
 router.get(

@@ -7,7 +7,7 @@ interface IUpdateBalanceReq {
 
 class BalanceRepository {
   UpdateBalance = async (req: IUpdateBalanceReq) => {
-    await BalanceModel.decrement("amount", {
+    await BalanceModel.increment("amount", {
       by: req.amount,
       where: {
         accountId: req.accountId,

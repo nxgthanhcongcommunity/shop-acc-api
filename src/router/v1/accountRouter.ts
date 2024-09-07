@@ -14,10 +14,12 @@ router.get(
 );
 router.get(
   "/get-account-by-code",
-  verifyTokenMiddleware(ROLES.MEMBER),
+  verifyTokenMiddleware([ROLES.MEMBER]),
   accountValidator.GetAccountByCodeAsync,
   accountController.GetAccountByCodeAsync
 );
+
+router.get("/get-account-by-code1", accountController.GetAccountByCodeAsync1);
 
 router.get(
   "/get-notifications",
@@ -36,12 +38,6 @@ router.post(
   verifyTokenMiddleware(ROLES.MEMBER),
   accountValidator.MarkNotificationsReadByAccountCodeAsync,
   accountController.MarkNotificationsReadByAccountCodeAsync
-);
-router.get(
-  "/get-account-balance-by-code",
-  verifyTokenMiddleware(ROLES.MEMBER),
-  accountValidator.GetAccountByCodeAsync,
-  accountController.GetAccountBalanceByCodeAsync
 );
 
 export default router;

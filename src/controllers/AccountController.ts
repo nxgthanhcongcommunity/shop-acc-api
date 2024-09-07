@@ -48,14 +48,13 @@ class AccountController extends BaseController {
     }
   };
 
-  GetNotificationsByAccountCodeAsync = async (req, res) => {
+  GetAccountByCodeAsync1 = async (req, res) => {
     try {
       const { accountCode } = req.query;
 
-      const record =
-        await this._accountRepository.GetNotificationsByAccountCodeAsync(
-          accountCode
-        );
+      const record = await this._accountRepository.GetAccountByCodeAsync(
+        accountCode
+      );
 
       return res.json({
         succeed: true,
@@ -65,17 +64,19 @@ class AccountController extends BaseController {
       return res.json({
         succeed: false,
         message: "server error",
+        ex: ex,
       });
     }
   };
 
-  GetAccountBalanceByCodeAsync = async (req, res) => {
+  GetNotificationsByAccountCodeAsync = async (req, res) => {
     try {
       const { accountCode } = req.query;
 
-      const record = await this._accountRepository.GetAccountBalanceByCodeAsync(
-        accountCode
-      );
+      const record =
+        await this._accountRepository.GetNotificationsByAccountCodeAsync(
+          accountCode
+        );
 
       return res.json({
         succeed: true,

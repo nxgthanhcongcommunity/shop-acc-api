@@ -1,7 +1,12 @@
 import { IAccountCreationAttributes } from "models/accountModel";
-import { Includeable, Optional } from "sequelize";
+import { Includeable, Optional, QueryTypes } from "sequelize";
 import { NullishPropertiesOf } from "sequelize/types/utils";
-import { AccountModel, BalanceModel, NotificationModel } from "../models";
+import {
+  AccountModel,
+  BalanceModel,
+  NotificationModel,
+  sequelize,
+} from "../models";
 
 class AccountRepository {
   GetAllAccountsAsync = async (
@@ -21,17 +26,6 @@ class AccountRepository {
 
   CountAllAsync = async () => {
     return await AccountModel.count();
-  };
-
-  GetAccountBalanceByCodeAsync = async (accountCode: string) => {
-    const record = await AccountModel.findOne({
-      where: {
-        code: accountCode,
-      },
-      include: [BalanceModel],
-    });
-
-    return record;
   };
 
   GetNotificationsByAccountCodeAsync = async (accountCode: string) => {
@@ -88,13 +82,22 @@ class AccountRepository {
   };
 
   GetAccountByCodeAsync = async (accountCode: string) => {
-    const record = await AccountModel.findOne({
-      where: {
-        code: accountCode,
-      },
-    });
-
-    return record;
+    const record = await sequelize.query(
+      `
+      select 
+        A.*, B.amount
+      from 
+        "Accounts" A
+        left join "Balances" B on A.id = B."accountId"
+      where 
+        code = :accountCode
+      `,
+      {
+        replacements: { accountCode },
+        type: QueryTypes.SELECT,
+      }
+    );
+    return record[0] as AccountModel;
   };
 
   GetAccountAtProvider = async (req) => {

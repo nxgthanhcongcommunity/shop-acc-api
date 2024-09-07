@@ -42,7 +42,7 @@ class TransactionController extends BaseController {
         });
       return res.json({
         succeed: true,
-        data: records,
+        data: { total: 100, records },
       });
     } catch (ex) {
       return res.json({
