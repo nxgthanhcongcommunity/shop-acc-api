@@ -1,31 +1,51 @@
-import { Op } from "sequelize";
-import { CategoryModel, ProductModel, QuantityModel } from "../models";
+import { Op, QueryTypes } from "sequelize";
+import {
+  CategoryModel,
+  ProductModel,
+  QuantityModel,
+  sequelize,
+} from "../models";
 import utils, { RequestHandler } from "../utils";
 import BaseController from "./BaseController";
 
 class ProductController extends BaseController {
   GetProductsByKeysAsync = async (req, res) => {
     try {
-      const { categoryCode } = req.query;
+      const { categoryCode, column, direction } = req.query;
 
-      const category = await CategoryModel.findOne({
-        where: {
-          code: categoryCode,
-        },
-      });
-      if (category == null) {
-        return res.json({
-          succeed: false,
-          message: "server error",
-        });
+      let orderClause = "";
+
+      if (
+        ["code", "name", "price", "gemChono"].includes(column) &&
+        ["ASC", "DESC"].includes(direction)
+      ) {
+        orderClause = `ORDER BY P."${column}" ${direction}`;
       }
 
-      const records = await ProductModel.findAll({
-        where: {
-          categoryId: category.id,
-        },
-        include: [QuantityModel],
-      });
+      const records = await sequelize.query(
+        `
+        select 
+          '' _
+          , P."code"
+          , P."mainFileCLDId"
+          , P."name"
+          , P."price"
+          , Q."currentQuantity"
+          , P."gemChono"
+          , C."code" "categoryCode"
+        from 
+          "Products" P
+          inner join "Quantities" Q on P."id" = Q."productId"
+          inner join "Categories" C on P."categoryId" = C.id
+        where
+          C."code" = :categoryCode
+          ${orderClause}
+        `,
+        {
+          replacements: { categoryCode },
+          type: QueryTypes.SELECT,
+        }
+      );
 
       return res.json({
         succeed: true,
@@ -35,6 +55,7 @@ class ProductController extends BaseController {
       return res.json({
         succeed: false,
         message: "server error",
+        ex: ex,
       });
     }
   };

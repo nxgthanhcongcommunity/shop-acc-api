@@ -23,19 +23,19 @@ router.get("/get-account-by-code1", accountController.GetAccountByCodeAsync1);
 
 router.get(
   "/get-notifications",
-  verifyTokenMiddleware(ROLES.MEMBER),
+  verifyTokenMiddleware([ROLES.MEMBER]),
   accountValidator.GetNotificationsByAccountCodeAsync,
   accountController.GetNotificationsByAccountCodeAsync
 );
 router.post(
   "/mark-notification-read-by-code",
-  verifyTokenMiddleware(ROLES.MEMBER),
+  verifyTokenMiddleware([ROLES.MEMBER]),
   accountValidator.MarkNotificationReadByCodeAsync,
   accountController.MarkNotificationReadByCodeAsync
 );
 router.post(
   "/mark-notifications-read-by-account-code",
-  verifyTokenMiddleware(ROLES.MEMBER),
+  verifyTokenMiddleware([ROLES.MEMBER]),
   accountValidator.MarkNotificationsReadByAccountCodeAsync,
   accountController.MarkNotificationsReadByAccountCodeAsync
 );
